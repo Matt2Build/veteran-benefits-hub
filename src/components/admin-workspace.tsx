@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import ReactMarkdown from "react-markdown";
 import { Filter, Save } from "lucide-react";
-import { categories, states } from "@/lib/data";
 import { formatDate, isOlderThanSixMonths, statusLabel } from "@/lib/format";
+import { categories, states } from "@/lib/seed-data";
 import { BenefitRecord, BenefitStatus } from "@/lib/types";
 import { StatusBadge } from "@/components/status-badge";
 
@@ -23,6 +23,8 @@ export function AdminWorkspace({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [publishedFilter, setPublishedFilter] = useState("all");
   const [reviewQueueOnly, setReviewQueueOnly] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   const selectedRow = rows.find((row) => row.id === selectedId) ?? rows[0];
 
@@ -62,6 +64,43 @@ export function AdminWorkspace({
         row.id === selectedRow.id ? { ...row, ...patch } : row,
       ),
     );
+  }
+
+  function saveSelectedRow(nextVerifiedDate?: string) {
+    if (!selectedRow || demoMode) {
+      return;
+    }
+
+    const rowToSave = {
+      ...selectedRow,
+      verifiedDate: nextVerifiedDate ?? selectedRow.verifiedDate ?? null,
+    };
+
+    if (nextVerifiedDate) {
+      updateSelectedRow({ verifiedDate: nextVerifiedDate });
+    }
+
+    startTransition(async () => {
+      setSaveMessage("");
+
+      const response = await fetch(`/api/admin/benefits/${selectedRow.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(rowToSave),
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        setSaveMessage(payload?.error || "Save failed.");
+        return;
+      }
+
+      setSaveMessage("Saved.");
+    });
   }
 
   if (!selectedRow) {
@@ -289,19 +328,24 @@ export function AdminWorkspace({
             <button
               type="button"
               className="rounded-full border border-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
-              onClick={() => updateSelectedRow({ verifiedDate: "2026-07-13" })}
+              onClick={() => saveSelectedRow(new Date().toISOString().slice(0, 10))}
             >
               Mark verified today
             </button>
             <button
               type="button"
               className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white"
-              onClick={() => updateSelectedRow({})}
+              onClick={() => saveSelectedRow()}
+              disabled={isPending}
             >
               <Save className="h-4 w-4" />
-              Save
+              {isPending ? "Saving" : "Save"}
             </button>
           </div>
+
+          {saveMessage ? (
+            <p className="text-sm text-[color:var(--muted)]">{saveMessage}</p>
+          ) : null}
 
           <p className="text-sm font-semibold text-[color:var(--foreground)]">
             Verified {formatDate(selectedRow.verifiedDate)}

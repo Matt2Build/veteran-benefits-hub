@@ -18,7 +18,7 @@ export function AdminSignIn() {
     const { error } = await client.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/admin`,
+        emailRedirectTo: `${window.location.origin}/auth/confirm`,
       },
     });
 

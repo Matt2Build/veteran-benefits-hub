@@ -3,7 +3,7 @@
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { states } from "@/lib/data";
+import { states } from "@/lib/seed-data";
 
 export function StateSelector() {
   const router = useRouter();

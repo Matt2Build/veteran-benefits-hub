@@ -38,7 +38,7 @@ export function generateMetadata({
   };
 }
 
-export default function StatePage({
+export default async function StatePage({
   params,
 }: {
   params: { slug: string };
@@ -48,7 +48,7 @@ export default function StatePage({
     notFound();
   }
 
-  const benefits = getPublishedBenefitsByState(state.slug);
+  const benefits = await getPublishedBenefitsByState(state.slug);
   const neighbors = getNeighborStates(state.slug);
 
   const faqSchema = benefits.length

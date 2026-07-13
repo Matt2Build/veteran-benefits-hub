@@ -19,7 +19,7 @@ export default async function AdminSignInPage() {
             Supabase auth is not configured yet.
           </h1>
           <p className="mt-4 text-base leading-8 text-[color:var(--muted)]">
-            Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, then reload this page to enable magic-link sign-in for the admin area.
+            Add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY`, then reload this page to enable magic-link sign-in for the admin area.
           </p>
         </div>
       </div>

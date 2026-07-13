@@ -24,6 +24,8 @@ export default async function AdminPage() {
     }
   }
 
+  const rows = await getBenefitsForAdmin();
+
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
       <section className="space-y-5">
@@ -45,7 +47,7 @@ export default async function AdminPage() {
         </p>
       </section>
 
-      <AdminWorkspace initialRows={getBenefitsForAdmin()} demoMode={demoMode} />
+      <AdminWorkspace initialRows={rows} demoMode={demoMode} />
     </div>
   );
 }

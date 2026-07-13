@@ -29,7 +29,7 @@ export function generateMetadata({
   };
 }
 
-export default function CompareCategoryPage({
+export default async function CompareCategoryPage({
   params,
 }: {
   params: { category: string };
@@ -39,7 +39,7 @@ export default function CompareCategoryPage({
     notFound();
   }
 
-  const rows = getComparisonRows(category.slug);
+  const rows = await getComparisonRows(category.slug);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">

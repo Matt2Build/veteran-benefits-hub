@@ -40,6 +40,25 @@ export interface BenefitRecord {
   featuredInComparison: boolean;
 }
 
+export interface DatabaseBenefitRow {
+  id: string;
+  state_slug: string;
+  category: BenefitCategorySlug;
+  category_group: BenefitCategoryGroup;
+  question: string;
+  summary: string;
+  detail_md: string;
+  status: BenefitStatus;
+  disability_threshold: string | null;
+  source_label: string | null;
+  source_url: string | null;
+  verified_date: string | null;
+  published: boolean;
+  featured_in_comparison: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface ComparisonRow {
   stateSlug: string;
   stateName: string;

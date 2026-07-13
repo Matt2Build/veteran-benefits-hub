@@ -26,6 +26,7 @@ Copy `.env.example` to `.env.local` if you want to configure:
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
 Without Supabase env vars, `/admin` runs in transparent demo mode so the editorial UI can still be reviewed locally.
 
