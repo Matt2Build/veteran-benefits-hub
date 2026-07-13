@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Database,
+  Search,
   ShieldCheck,
   TableProperties,
 } from "lucide-react";
@@ -23,67 +24,105 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-20 px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
-      <section className="relative overflow-hidden rounded-[2.75rem] border border-[color:var(--line)] bg-[radial-gradient(circle_at_top,rgba(184,144,69,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,240,228,0.94))] p-6 shadow-[0_34px_90px_rgba(16,33,50,0.12)] sm:p-8 lg:p-10">
-        <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_center,rgba(18,37,58,0.10),transparent_68%)]" />
-        <div className="relative space-y-8">
-          <div className="inline-flex items-center gap-3 rounded-full border border-[color:var(--line)] bg-white/78 px-4 py-2 text-sm font-medium text-[color:var(--muted)] shadow-[0_12px_32px_rgba(16,33,50,0.08)]">
-            <ShieldCheck className="h-4 w-4 text-[color:var(--accent)]" />
-            Veteran-built. Source-first. Plain English.
-          </div>
-          <div className="grid gap-10 xl:grid-cols-[1.15fr_0.85fr] xl:items-end">
-            <div className="space-y-5">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
-                Veteran Benefits Hub
-              </p>
-              <h1 className="max-w-5xl text-5xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
-                Thank you for your service.
-              </h1>
-              <h2 className="max-w-4xl text-3xl font-semibold tracking-tight text-[color:var(--navy)] sm:text-4xl">
-                How can we serve you?
-              </h2>
-              <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted)]">
-                Start with the problem you need solved. Disability, health care, housing, education, employment, crisis support, family help, and official providers should be reachable in one step.
-              </p>
+      <section className="relative overflow-hidden rounded-[2.75rem] border border-[rgba(255,255,255,0.08)] bg-[linear-gradient(135deg,#0a1017_0%,#101825_44%,#172232_100%)] px-6 py-8 shadow-[0_38px_100px_rgba(8,14,22,0.34)] sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_18%,rgba(191,148,80,0.20),transparent_26%),radial-gradient(circle_at_82%_30%,rgba(191,148,80,0.14),transparent_22%),radial-gradient(circle_at_50%_100%,rgba(255,255,255,0.05),transparent_40%)]" />
+        <div className="absolute inset-y-0 right-0 hidden w-[42%] bg-[radial-gradient(circle_at_center,rgba(191,148,80,0.18),transparent_38%)] lg:block" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,transparent,rgba(255,255,255,0.03))]" />
+        <div className="relative">
+          <div className="mx-auto max-w-5xl text-center">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/12 bg-white/6 px-4 py-2 text-sm font-medium text-white/72 shadow-[0_16px_34px_rgba(0,0,0,0.20)] backdrop-blur-xl">
+              <ShieldCheck className="h-4 w-4 text-[color:var(--accent)]" />
+              Veteran-built. Source-first. Plain English.
             </div>
-            <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-white/78 p-5 shadow-[0_18px_42px_rgba(16,33,50,0.08)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
-                  Verified facts
-                </p>
-                <p className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                  Every published row keeps the source and the verification date visible.
-                </p>
-              </div>
-              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-white/78 p-5 shadow-[0_18px_42px_rgba(16,33,50,0.08)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
-                  Official channels
-                </p>
-                <p className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                  Guides route users back into VA and other official provider lanes instead of dead ends.
-                </p>
-              </div>
-              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-[linear-gradient(180deg,rgba(18,37,58,0.96),rgba(25,45,66,0.92))] p-5 text-white shadow-[0_22px_54px_rgba(16,33,50,0.18)]">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">
-                  One-stop path
-                </p>
-                <p className="mt-3 text-xl font-semibold tracking-tight text-white">
-                  Resource-first guidance up front, then state-specific policy and comparison data underneath it.
-                </p>
-              </div>
+            <p className="mt-8 text-sm font-semibold uppercase tracking-[0.34em] text-[color:rgba(191,148,80,0.86)]">
+              Veteran Benefits Hub
+            </p>
+            <h1 className="mt-6 text-5xl font-semibold tracking-tight text-white sm:text-6xl lg:text-7xl">
+              Thank you for your service.
+            </h1>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-[color:rgba(245,247,250,0.94)] sm:text-4xl lg:text-5xl">
+              How can we serve you?
+            </h2>
+            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/68">
+              Start with the problem you need solved. Find the right resource lane first, then move into official providers, verified facts, and state-by-state comparisons without the usual clutter.
+            </p>
+
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <span className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-white/70 backdrop-blur-xl">
+                Disability claims
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-white/70 backdrop-blur-xl">
+                Health care
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-white/70 backdrop-blur-xl">
+                Housing
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm font-medium text-white/70 backdrop-blur-xl">
+                Family support
+              </span>
             </div>
           </div>
 
-          <ResourceSelector />
+          <div className="mx-auto mt-10 max-w-5xl rounded-[2.1rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04))] p-4 shadow-[0_24px_60px_rgba(0,0,0,0.24)] backdrop-blur-2xl sm:p-5 lg:p-6">
+            <div className="mb-5 flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="grid h-11 w-11 place-items-center rounded-[1rem] bg-[rgba(191,148,80,0.16)] text-[color:var(--accent)]">
+                  <Search className="h-5 w-5" />
+                </span>
+                <div className="text-left">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-white/48">
+                    Start here
+                  </p>
+                  <p className="mt-1 text-base font-semibold text-white">
+                    Search for the kind of help you need
+                  </p>
+                </div>
+              </div>
+              <span className="hidden rounded-full border border-white/10 bg-white/6 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[color:rgba(191,148,80,0.92)] lg:inline-flex">
+                One-stop resource entry
+              </span>
+            </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <ResourceSelector />
+          </div>
+
+          <div className="mx-auto mt-8 grid max-w-5xl gap-4 md:grid-cols-3">
+            <div className="rounded-[1.8rem] border border-white/10 bg-white/6 p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[color:rgba(191,148,80,0.86)]">
+                Verified facts
+              </p>
+              <p className="mt-3 text-xl font-semibold tracking-tight text-white">
+                Published answers keep the source and verification date visible.
+              </p>
+            </div>
+            <div className="rounded-[1.8rem] border border-white/10 bg-white/6 p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.16)] backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[color:rgba(191,148,80,0.86)]">
+                Official channels
+              </p>
+              <p className="mt-3 text-xl font-semibold tracking-tight text-white">
+                Guides point back into VA and other real provider systems, not generic advice loops.
+              </p>
+            </div>
+            <div className="rounded-[1.8rem] border border-[rgba(191,148,80,0.28)] bg-[linear-gradient(180deg,rgba(191,148,80,0.16),rgba(191,148,80,0.08))] p-5 text-left shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[color:rgba(248,223,174,0.88)]">
+                Streamlined path
+              </p>
+              <p className="mt-3 text-xl font-semibold tracking-tight text-white">
+                Resource-first guidance up front, then state-specific policy and comparison data underneath it.
+              </p>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-8 grid max-w-5xl gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {databaseStats.map((stat) => (
               <DatabaseStatCard key={stat.label} stat={stat} />
             ))}
           </div>
-          <div className="flex flex-wrap gap-3">
+
+          <div className="mx-auto mt-8 flex max-w-5xl flex-wrap justify-center gap-3">
             <Link
               href="/resources"
-              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_rgba(16,33,50,0.18)] [&&]:text-white [&_svg]:text-white"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--accent)] px-5 py-3 text-sm font-semibold text-[color:var(--navy)] shadow-[0_20px_50px_rgba(191,148,80,0.24)] [&&]:text-[color:var(--navy)] [&_svg]:text-[color:var(--navy)]"
             >
               Browse all resource guides
               <ArrowRight className="h-4 w-4" />
@@ -92,7 +131,7 @@ export default function HomePage() {
               <Link
                 key={category.slug}
                 href={`/compare/${category.slug}`}
-                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-[0_12px_32px_rgba(16,33,50,0.08)] transition hover:border-[color:var(--accent)]"
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-5 py-3 text-sm font-semibold text-white shadow-[0_16px_38px_rgba(0,0,0,0.14)] backdrop-blur-xl transition hover:border-[color:rgba(191,148,80,0.46)]"
               >
                 <TableProperties className="h-4 w-4 text-[color:var(--accent)]" />
                 {category.label}
