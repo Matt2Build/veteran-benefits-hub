@@ -1,0 +1,75 @@
+import Link from "next/link";
+import { ArrowUpRight, TableProperties } from "lucide-react";
+import {
+  StateResourceEntry,
+  getProvidersByIds,
+  getResourceTopicBySlug,
+} from "@/lib/resource-data";
+import { categories } from "@/lib/seed-data";
+
+export function StateResourceCard({ entry }: { entry: StateResourceEntry }) {
+  const topic = getResourceTopicBySlug(entry.topicSlug);
+  const providers = getProvidersByIds(entry.providerIds);
+  const compareCategory = categories.find(
+    (category) => category.slug === entry.compareCategorySlugs[0],
+  );
+
+  if (!topic) {
+    return null;
+  }
+
+  return (
+    <article className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.94))] p-6 shadow-[0_22px_58px_rgba(16,33,50,0.08)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+        {topic.shortTitle}
+      </p>
+      <h3 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+        {entry.title}
+      </h3>
+      <p className="mt-3 text-base leading-8 text-[color:var(--muted)]">
+        {entry.summary}
+      </p>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {providers.map((provider) => (
+          <span
+            key={provider.id}
+            className="rounded-full border border-[color:var(--line)] bg-white/80 px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
+          >
+            {provider.name}
+          </span>
+        ))}
+      </div>
+
+      <ul className="mt-5 space-y-2">
+        {entry.quickChecks.map((check) => (
+          <li
+            key={check}
+            className="text-sm leading-6 text-[color:var(--muted)]"
+          >
+            {check}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Link
+          href={`/resources/${entry.topicSlug}`}
+          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white"
+        >
+          Open guide
+          <ArrowUpRight className="h-4 w-4" />
+        </Link>
+        {compareCategory ? (
+          <Link
+            href={`/compare/${compareCategory.slug}`}
+            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/80 px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Compare {compareCategory.shortLabel}
+            <TableProperties className="h-4 w-4" />
+          </Link>
+        ) : null}
+      </div>
+    </article>
+  );
+}

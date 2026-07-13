@@ -9,6 +9,30 @@ import { BenefitRecord, BenefitStatus } from "@/lib/types";
 import { StatusBadge } from "@/components/status-badge";
 
 const statusOptions: BenefitStatus[] = ["full", "partial", "conditional", "none"];
+const stateNameBySlug = new Map(states.map((state) => [state.slug, state.name]));
+const categoryLabelBySlug = new Map(
+  categories.map((category) => [category.slug, category.shortLabel]),
+);
+
+function sortAdminRows(rows: BenefitRecord[]) {
+  return [...rows].sort((left, right) => {
+    const leftState = stateNameBySlug.get(left.stateSlug) ?? left.stateSlug;
+    const rightState = stateNameBySlug.get(right.stateSlug) ?? right.stateSlug;
+    const stateCompare = leftState.localeCompare(rightState);
+    if (stateCompare !== 0) {
+      return stateCompare;
+    }
+
+    const leftCategory = categoryLabelBySlug.get(left.category) ?? left.category;
+    const rightCategory = categoryLabelBySlug.get(right.category) ?? right.category;
+    const categoryCompare = leftCategory.localeCompare(rightCategory);
+    if (categoryCompare !== 0) {
+      return categoryCompare;
+    }
+
+    return left.question.localeCompare(right.question);
+  });
+}
 
 export function AdminWorkspace({
   initialRows,
@@ -17,8 +41,9 @@ export function AdminWorkspace({
   initialRows: BenefitRecord[];
   demoMode: boolean;
 }) {
-  const [rows, setRows] = useState(initialRows);
-  const [selectedId, setSelectedId] = useState(initialRows[0]?.id ?? "");
+  const initialSortedRows = useMemo(() => sortAdminRows(initialRows), [initialRows]);
+  const [rows, setRows] = useState(initialSortedRows);
+  const [selectedId, setSelectedId] = useState(initialSortedRows[0]?.id ?? "");
   const [stateFilter, setStateFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [publishedFilter, setPublishedFilter] = useState("all");
@@ -26,10 +51,11 @@ export function AdminWorkspace({
   const [saveMessage, setSaveMessage] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const selectedRow = rows.find((row) => row.id === selectedId) ?? rows[0];
+  const sortedRows = useMemo(() => sortAdminRows(rows), [rows]);
+  const selectedRow = sortedRows.find((row) => row.id === selectedId) ?? sortedRows[0];
 
   const filteredRows = useMemo(() => {
-    return rows.filter((row) => {
+    return sortedRows.filter((row) => {
       if (stateFilter !== "all" && row.stateSlug !== stateFilter) {
         return false;
       }
@@ -52,7 +78,7 @@ export function AdminWorkspace({
 
       return true;
     });
-  }, [categoryFilter, publishedFilter, reviewQueueOnly, rows, stateFilter]);
+  }, [categoryFilter, publishedFilter, reviewQueueOnly, sortedRows, stateFilter]);
 
   function updateSelectedRow(patch: Partial<BenefitRecord>) {
     if (!selectedRow) {

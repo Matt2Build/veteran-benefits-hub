@@ -1,3 +1,6 @@
+import { categories, getStateBySlug, states } from "@/lib/seed-data";
+import { BenefitCategorySlug } from "@/lib/types";
+
 export interface ResourceProvider {
   id: string;
   name: string;
@@ -5,6 +8,8 @@ export interface ResourceProvider {
   href: string;
   ctaLabel: string;
   audience: string;
+  typeLabel: string;
+  highlights: string[];
 }
 
 export interface ResourceTopic {
@@ -16,104 +21,204 @@ export interface ResourceTopic {
   icon: string;
   providerIds: string[];
   bullets: string[];
+  quickChecks: string[];
+  heroLabel: string;
+  heroSummary: string;
+  compareCategorySlugs: BenefitCategorySlug[];
+}
+
+export interface StateResourceEntry {
+  id: string;
+  stateSlug: string;
+  topicSlug: string;
+  title: string;
+  summary: string;
+  quickChecks: string[];
+  providerIds: string[];
+  compareCategorySlugs: BenefitCategorySlug[];
 }
 
 export const resourceProviders: ResourceProvider[] = [
   {
     id: "va-disability",
     name: "VA disability compensation",
-    description: "Start, manage, or strengthen a service-connected disability claim.",
+    description:
+      "The primary official path for service-connected disability claims, evidence, ratings, and appeals.",
     href: "https://www.va.gov/disability/how-to-file-claim/",
-    ctaLabel: "File or manage a claim",
+    ctaLabel: "Open disability compensation",
     audience: "Veterans with service-connected conditions",
+    typeLabel: "Official VA benefit program",
+    highlights: [
+      "New, supplemental, and increase claims",
+      "Claim status and supporting evidence",
+      "Ratings and monthly compensation",
+    ],
   },
   {
     id: "va-health-care",
     name: "VA health care",
-    description: "Apply for coverage, check eligibility, and learn how care access works.",
+    description:
+      "The main enrollment and care-access entry point for Veterans seeking VA medical coverage.",
     href: "https://www.va.gov/health-care/how-to-apply/",
-    ctaLabel: "Apply for health care",
+    ctaLabel: "Open VA health care",
     audience: "Veterans seeking VA medical care",
+    typeLabel: "Official VA care program",
+    highlights: [
+      "Apply for coverage",
+      "Review eligibility basics",
+      "Understand how care access works",
+    ],
   },
   {
     id: "va-education",
     name: "GI Bill and education benefits",
-    description: "Use GI Bill and other VA education programs for school or training.",
+    description:
+      "The official education starting point for GI Bill, school funding, and training support.",
     href: "https://www.va.gov/education/how-to-apply/",
-    ctaLabel: "Apply for education benefits",
+    ctaLabel: "Open education benefits",
     audience: "Veterans, service members, and dependents",
+    typeLabel: "Official VA education program",
+    highlights: [
+      "GI Bill applications",
+      "School and training benefits",
+      "Dependent and survivor education options",
+    ],
   },
   {
     id: "va-vre",
     name: "Veteran Readiness and Employment",
-    description: "Career support, training, accommodations, and employment planning.",
+    description:
+      "Employment planning, training, accommodations, and long-range career support tied to disability.",
     href: "https://www.va.gov/careers-employment/vocational-rehabilitation/",
-    ctaLabel: "Explore VR&E",
-    audience: "Veterans with service-connected disabilities affecting work",
+    ctaLabel: "Open VR&E",
+    audience: "Veterans whose disabilities affect work",
+    typeLabel: "Official VA employment program",
+    highlights: [
+      "Career planning and training",
+      "Education aligned to work goals",
+      "Employment barriers tied to disability",
+    ],
   },
   {
     id: "va-housing",
     name: "VA housing assistance",
-    description: "Home loans, housing grants, and help for Veterans at risk of homelessness.",
+    description:
+      "The official housing lane for home loans, adaptive housing, and homelessness-related help.",
     href: "https://www.va.gov/housing-assistance/",
-    ctaLabel: "Find housing support",
+    ctaLabel: "Open housing assistance",
     audience: "Veterans buying homes or facing housing instability",
+    typeLabel: "Official VA housing program",
+    highlights: [
+      "VA-backed home loans",
+      "Adaptive housing and grant programs",
+      "Housing instability and homelessness support",
+    ],
   },
   {
     id: "va-caregiver",
     name: "VA caregiver support",
-    description: "Support programs and application pathways for family caregivers.",
+    description:
+      "The primary caregiver support path for families supporting a Veteran with significant needs.",
     href: "https://www.va.gov/family-and-caregiver-benefits/health-and-disability/comprehensive-assistance-for-family-caregivers/",
-    ctaLabel: "Review caregiver support",
+    ctaLabel: "Open caregiver support",
     audience: "Family caregivers and military spouses",
+    typeLabel: "Official VA family support program",
+    highlights: [
+      "Caregiver program details",
+      "Eligibility and application steps",
+      "Family support around medical needs",
+    ],
   },
   {
     id: "va-pension",
     name: "VA pension benefits",
-    description: "Income-based pension support for qualifying wartime Veterans.",
+    description:
+      "The official income-based benefit path for qualifying wartime Veterans and some survivors.",
     href: "https://www.va.gov/pension/",
-    ctaLabel: "Check pension options",
+    ctaLabel: "Open pension benefits",
     audience: "Wartime Veterans and some survivors",
+    typeLabel: "Official VA income support program",
+    highlights: [
+      "Pension eligibility",
+      "Income and net worth rules",
+      "Survivor and later-life support paths",
+    ],
   },
   {
     id: "va-burial",
     name: "Burial and memorial benefits",
-    description: "Burial allowances, memorial items, and cemetery planning resources.",
+    description:
+      "The official source for burial allowances, memorial items, and planning ahead.",
     href: "https://www.va.gov/burials-memorials/",
-    ctaLabel: "Plan burial or memorial benefits",
-    audience: "Veterans and family members planning ahead or handling time-of-need",
+    ctaLabel: "Open burial and memorial benefits",
+    audience:
+      "Veterans and family members planning ahead or handling time-of-need",
+    typeLabel: "Official VA memorial program",
+    highlights: [
+      "Burial allowances",
+      "Memorial items and cemetery support",
+      "Planning ahead for later-life needs",
+    ],
   },
   {
     id: "va-vso",
     name: "VA-accredited representatives and VSOs",
-    description: "Find a qualified representative to help with claims and appeals.",
+    description:
+      "The official directory for accredited claims help, representation, and appeal support.",
     href: "https://www.va.gov/get-help-from-accredited-representative/find-rep/",
-    ctaLabel: "Find a representative",
-    audience: "Veterans who want claims help",
+    ctaLabel: "Find accredited help",
+    audience: "Veterans who want help filing, reviewing, or appealing",
+    typeLabel: "Official VA directory",
+    highlights: [
+      "Find an accredited representative",
+      "Use help before filing or appealing",
+      "Avoid relying on unvetted claims assistance",
+    ],
   },
   {
     id: "va-locations",
     name: "VA locations",
-    description: "Locate VA hospitals, clinics, regional offices, cemeteries, and Vet Centers.",
+    description:
+      "The official location finder for hospitals, clinics, Vet Centers, regional offices, and cemeteries.",
     href: "https://www.va.gov/find-locations/",
-    ctaLabel: "Find a nearby VA location",
+    ctaLabel: "Find VA locations",
     audience: "Anyone trying to find in-person VA services",
+    typeLabel: "Official VA directory",
+    highlights: [
+      "Hospitals and clinics",
+      "Regional offices and Vet Centers",
+      "In-person help close to home",
+    ],
   },
   {
     id: "vcl",
     name: "Veterans Crisis Line",
-    description: "Immediate 24/7 crisis support by phone, chat, or text.",
+    description:
+      "The immediate 24/7 crisis support entry point for Veterans, service members, and families.",
     href: "https://www.veteranscrisisline.net/",
-    ctaLabel: "Get crisis support now",
+    ctaLabel: "Open crisis support",
     audience: "Veterans, service members, families, and friends in crisis",
+    typeLabel: "Immediate support line",
+    highlights: [
+      "24/7 phone, chat, and text help",
+      "Works even if you are not enrolled in VA care",
+      "Fastest path when mental health support cannot wait",
+    ],
   },
   {
     id: "women-vets",
     name: "Women Veterans Call Center",
-    description: "Dedicated help navigating benefits, care, and women Veterans resources.",
+    description:
+      "A dedicated entry point for navigating benefits, care, and women Veterans services.",
     href: "https://www.womenshealth.va.gov/wvcc.asp",
-    ctaLabel: "Contact the Women Veterans Call Center",
+    ctaLabel: "Open Women Veterans support",
     audience: "Women Veterans and families",
+    typeLabel: "Dedicated support line",
+    highlights: [
+      "Women Veterans benefits navigation",
+      "Care and access questions",
+      "A human starting point when the system feels unclear",
+    ],
   },
 ];
 
@@ -123,9 +228,9 @@ export const resourceTopics: ResourceTopic[] = [
     title: "Disability claims and ratings",
     shortTitle: "Disability",
     description:
-      "Service-connected disability claims, ratings, evidence, appeals, and monthly compensation questions.",
+      "Service-connected disability claims, ratings, evidence, appeals, and compensation questions.",
     summary:
-      "File a claim, understand eligibility, track your rating, and find accredited help before you miss a step.",
+      "File a claim, understand eligibility, track your rating, and get accredited help before you miss a step.",
     icon: "shield",
     providerIds: ["va-disability", "va-vso"],
     bullets: [
@@ -133,6 +238,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Understand rating decisions and what drives compensation.",
       "Find an accredited VSO before filing or appealing.",
     ],
+    quickChecks: [
+      "Do you need to file, increase, or appeal?",
+      "Do you already have medical evidence or service records?",
+      "Would accredited help speed this up?",
+    ],
+    heroLabel: "Compensation, evidence, and appeals",
+    heroSummary:
+      "This is the lane for Veterans trying to turn service-connected conditions into a claim that is complete, defensible, and easier to move through the system.",
+    compareCategorySlugs: ["property-tax-exemption"],
   },
   {
     slug: "health-care",
@@ -149,6 +263,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Check eligibility basics and where to get care.",
       "Find the right clinic, regional office, or Vet Center near you.",
     ],
+    quickChecks: [
+      "Do you need enrollment or just a facility?",
+      "Are you looking for general care or mental health access?",
+      "Do you need a nearby in-person office today?",
+    ],
+    heroLabel: "Enrollment, locations, and care access",
+    heroSummary:
+      "Veterans usually need three things here: whether they qualify, how to get enrolled, and where the nearest real care access point is.",
+    compareCategorySlugs: [],
   },
   {
     slug: "education-training",
@@ -165,6 +288,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Compare education and training paths.",
       "Use VR&E if disability affects your work or school plan.",
     ],
+    quickChecks: [
+      "Do you need school funding or career-aligned training?",
+      "Would VR&E fit better than a standard GI Bill path?",
+      "Are you trying to translate education into employment quickly?",
+    ],
+    heroLabel: "School funding and job-aligned training",
+    heroSummary:
+      "This guide is for Veterans trying to turn benefits into credentials, training, and a faster route into stable work.",
+    compareCategorySlugs: [],
   },
   {
     slug: "housing-homelessness",
@@ -181,6 +313,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Get help fast if you’re homeless or at risk.",
       "Find the office or program closest to you.",
     ],
+    quickChecks: [
+      "Are you trying to buy, stay housed, or get urgent support?",
+      "Does disability affect what housing benefits fit?",
+      "Do you need a nearby office instead of another article?",
+    ],
+    heroLabel: "Home buying, stability, and urgent housing support",
+    heroSummary:
+      "Housing questions split fast: buying a home, adapting one, or dealing with instability. This guide keeps those paths separate and visible.",
+    compareCategorySlugs: ["property-tax-exemption"],
   },
   {
     slug: "jobs-and-employment",
@@ -197,6 +338,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Use education benefits alongside employment planning.",
       "Identify the fastest path from transition to income.",
     ],
+    quickChecks: [
+      "Is the goal immediate work, retraining, or a longer reset?",
+      "Does a disability create a work barrier or accommodation issue?",
+      "Would education and employment planning need to happen together?",
+    ],
+    heroLabel: "Transition, training, and employment planning",
+    heroSummary:
+      "This lane is less about a single benefit and more about getting from service or instability to income, training, and a sustainable career path.",
+    compareCategorySlugs: [],
   },
   {
     slug: "mental-health-and-crisis",
@@ -213,13 +363,22 @@ export const resourceTopics: ResourceTopic[] = [
       "Connect crisis support to ongoing care afterward.",
       "Find VA or Vet Center access near you.",
     ],
+    quickChecks: [
+      "Do you need immediate crisis help or ongoing care access?",
+      "Do you need support even without VA enrollment?",
+      "Is a nearby Vet Center or clinic the fastest next step?",
+    ],
+    heroLabel: "Immediate help first, then ongoing care",
+    heroSummary:
+      "The priority here is simple: make the fastest help impossible to miss, then make the next care step easier to find.",
+    compareCategorySlugs: [],
   },
   {
     slug: "family-caregiver-and-spouse",
     title: "Family, caregiver, and spouse support",
     shortTitle: "Family support",
     description:
-      "Caregiver programs, spouse-relevant benefits paths, and support services around the Veteran.",
+      "Caregiver programs, spouse-relevant benefit paths, and support services around the Veteran.",
     summary:
       "Family support often determines whether the rest of the system works. This lane keeps those entry points visible.",
     icon: "users",
@@ -229,6 +388,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Find women Veterans support if that’s the right entry point.",
       "Use accredited help when the family benefit path gets confusing.",
     ],
+    quickChecks: [
+      "Is a spouse or caregiver trying to navigate the system too?",
+      "Does the Veteran’s care plan depend on family support?",
+      "Would a human help line be more useful than another document?",
+    ],
+    heroLabel: "Support around the Veteran, not just on the Veteran",
+    heroSummary:
+      "Family support is often what makes the rest of the benefits system function. This guide keeps caregiver and spouse entry points visible instead of buried.",
+    compareCategorySlugs: [],
   },
   {
     slug: "pension-survivors-and-later-life",
@@ -245,6 +413,15 @@ export const resourceTopics: ResourceTopic[] = [
       "Review survivor-related support paths.",
       "Keep end-of-life and memorial planning visible instead of buried.",
     ],
+    quickChecks: [
+      "Is the main question about income support, survivors, or planning ahead?",
+      "Does later-life support matter more than disability compensation here?",
+      "Would memorial or burial planning save time later?",
+    ],
+    heroLabel: "Income support and later-life planning",
+    heroSummary:
+      "This guide exists because pension and survivor support are easy to miss if everything is framed only around disability claims.",
+    compareCategorySlugs: ["military-retirement-pay"],
   },
 ];
 
@@ -261,19 +438,63 @@ export function getAllResourceTopicSlugs() {
   return resourceTopics.map((topic) => topic.slug);
 }
 
+export function getProvidersByIds(providerIds: string[]) {
+  return providerIds
+    .map((providerId) => providerMap.get(providerId))
+    .filter((provider): provider is ResourceProvider => Boolean(provider));
+}
+
 export function getProvidersForTopic(slug: string) {
   const topic = getResourceTopicBySlug(slug);
   if (!topic) {
     return [];
   }
 
-  return topic.providerIds
-    .map((providerId) => providerMap.get(providerId))
-    .filter((provider): provider is ResourceProvider => Boolean(provider));
+  return getProvidersByIds(topic.providerIds);
 }
 
 export function getCoreResourceProviders() {
-  return ["va-disability", "va-health-care", "va-education", "va-vso", "vcl"]
-    .map((providerId) => providerMap.get(providerId))
-    .filter((provider): provider is ResourceProvider => Boolean(provider));
+  return getProvidersByIds([
+    "va-disability",
+    "va-health-care",
+    "va-vso",
+    "vcl",
+  ]);
+}
+
+export function getFeaturedResourceTopics() {
+  return resourceTopics.slice(0, 4);
+}
+
+export function getStateResourceEntries(stateSlug: string): StateResourceEntry[] {
+  const state = getStateBySlug(stateSlug);
+  if (!state) {
+    return [];
+  }
+
+  return resourceTopics.map((topic) => {
+    const compareCategorySlugs = topic.compareCategorySlugs;
+    const compareLabels = compareCategorySlugs
+      .map((slug) => categories.find((category) => category.slug === slug)?.label)
+      .filter((label): label is string => Boolean(label));
+
+    const compareSuffix = compareLabels.length
+      ? ` In ${state.name}, also check ${compareLabels.join(" and ")}.`
+      : "";
+
+    return {
+      id: `${state.slug}-${topic.slug}`,
+      stateSlug: state.slug,
+      topicSlug: topic.slug,
+      title: `${state.name} ${topic.shortTitle.toLowerCase()} guide`,
+      summary: `${topic.summary}${compareSuffix}`,
+      quickChecks: topic.quickChecks.slice(0, 2),
+      providerIds: topic.providerIds.slice(0, 2),
+      compareCategorySlugs,
+    };
+  });
+}
+
+export function getFeaturedStatesForResources(limit = 6) {
+  return states.slice(0, limit);
 }

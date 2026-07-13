@@ -2,10 +2,10 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPinned } from "lucide-react";
 import { BenefitCard } from "@/components/benefit-card";
 import { ProviderCard } from "@/components/provider-card";
-import { ResourceTopicCard } from "@/components/resource-topic-card";
+import { StateResourceCard } from "@/components/state-resource-card";
 import {
   getAllStateSlugs,
   getNeighborStates,
@@ -14,7 +14,7 @@ import {
 } from "@/lib/data";
 import {
   getCoreResourceProviders,
-  resourceTopics,
+  getStateResourceEntries,
 } from "@/lib/resource-data";
 
 export const revalidate = 3600;
@@ -58,8 +58,8 @@ export default async function StatePage({
 
   const benefits = await getPublishedBenefitsByState(state.slug);
   const neighbors = getNeighborStates(state.slug);
-  const coreProviders = getCoreResourceProviders().slice(0, 4);
-  const featuredTopics = resourceTopics.slice(0, 4);
+  const coreProviders = getCoreResourceProviders();
+  const stateResourceEntries = getStateResourceEntries(state.slug);
 
   const faqSchema = benefits.length
     ? {
@@ -94,18 +94,48 @@ export default async function StatePage({
         />
       ) : null}
 
-      <section className="space-y-5">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
-          State page
-        </p>
-        <h1 className="text-5xl font-semibold tracking-tight text-[color:var(--foreground)]">
-          {state.name} veteran benefits
-        </h1>
-        <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted)]">
-          {state.hasDeepDive
-            ? "Published facts for Utah are live now and follow the intended editorial standard."
-            : "This state is part of the 50-state footprint. Published benefits will appear here as they are sourced and verified."}
-        </p>
+      <section className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
+        <div className="space-y-5">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+            State page
+          </p>
+          <h1 className="text-5xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            {state.name} veteran benefits
+          </h1>
+          <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted)]">
+            {state.hasDeepDive
+              ? "Published facts for Utah are live now and follow the intended editorial standard."
+              : `${state.name} is in the 50-state footprint. This page combines live state-specific benefits with the national support lanes Veterans still need.`}
+          </p>
+        </div>
+        <aside className="rounded-[2.25rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_30px_80px_rgba(16,33,50,0.10)]">
+          <div className="flex items-start gap-3">
+            <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[color:rgba(184,144,69,0.14)] text-[color:var(--navy)]">
+              <MapPinned className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+                Resource map
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                The support lanes Veterans in {state.name} usually need first
+              </h2>
+            </div>
+          </div>
+          <ul className="mt-6 space-y-3">
+            {stateResourceEntries.slice(0, 3).map((entry) => (
+              <li
+                key={entry.id}
+                className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 text-sm leading-7 text-[color:var(--muted)]"
+              >
+                <span className="font-semibold text-[color:var(--foreground)]">
+                  {entry.title}:
+                </span>{" "}
+                {entry.summary}
+              </li>
+            ))}
+          </ul>
+        </aside>
       </section>
 
       {state.introMd ? (
@@ -125,12 +155,12 @@ export default async function StatePage({
             Start here in {state.name}
           </p>
           <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            The help lanes Veterans most commonly need
+            The complete resource map for {state.name}
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {featuredTopics.map((topic) => (
-            <ResourceTopicCard key={topic.slug} topic={topic} compact />
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {stateResourceEntries.map((entry) => (
+            <StateResourceCard key={entry.id} entry={entry} />
           ))}
         </div>
       </section>
@@ -170,7 +200,7 @@ export default async function StatePage({
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
           {coreProviders.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} />
+            <ProviderCard key={provider.id} provider={provider} compact />
           ))}
         </div>
       </section>

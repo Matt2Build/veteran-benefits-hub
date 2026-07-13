@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3efe6;
-  --surface: #fffdf8;
+  --background: #f5f0e6;
+  --surface: #fffdf9;
   --foreground: #14263a;
   --muted: #5f6c79;
-  --line: #d6dbe2;
+  --line: #d1d8e0;
   --navy: #102132;
-  --accent: #b89045;
-  --accent-soft: #f1e5c8;
+  --accent: #bf9450;
+  --accent-soft: #f4e7c7;
 }
 
 @theme inline {
@@ -28,11 +28,29 @@ html {
 body {
   min-height: 100%;
   background:
-    radial-gradient(circle at top, rgba(184, 144, 69, 0.16), transparent 28%),
-    linear-gradient(180deg, #f8f5ec 0%, #f3efe6 100%);
+    radial-gradient(circle at top, rgba(191, 148, 80, 0.18), transparent 24%),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7), transparent 18%),
+    linear-gradient(180deg, #faf6ee 0%, #f5f0e6 48%, #f7f2e9 100%);
   color: var(--foreground);
   font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.14)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.02) 0,
+      rgba(255, 255, 255, 0.02) 1px,
+      transparent 1px,
+      transparent 36px
+    );
+  opacity: 0.4;
 }
 
 a {
@@ -55,4 +73,10 @@ a {
 
 .prose-markdown li + li {
   margin-top: 0.5rem;
+}
+
+.prose-markdown a {
+  color: var(--navy);
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
