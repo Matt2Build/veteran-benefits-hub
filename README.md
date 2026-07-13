@@ -24,11 +24,12 @@ pnpm dev
 Copy `.env.example` to `.env.local` if you want to configure:
 
 - `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_ENABLE_SUPABASE`
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
-Without Supabase env vars, `/admin` runs in transparent demo mode so the editorial UI can still be reviewed locally.
+The site is intentionally static-first by default. Unless `NEXT_PUBLIC_ENABLE_SUPABASE=true`, `/admin` runs in transparent demo mode and the public site serves the repo-backed seed data.
 
 ## Data model
 
@@ -52,18 +53,19 @@ That keeps the current seed-data implementation straightforward while mapping cl
 
 ## Supabase notes
 
-The admin UI is structured for a single editor and expects a future Supabase table for persistence. The current build includes:
+Supabase is optional and currently disabled by default while the product is still being built out in git/Vercel. The integration code remains in place so it can be turned back on later without another architecture pass.
+
+When enabled, the current build includes:
 
 - page-level auth gating for `/admin`
 - magic-link sign-in UI at `/admin/sign-in`
-- a local demo workspace that mirrors the intended editing flow
+- a database-backed `state_benefits` workflow
 
-Next step for productionizing the admin:
+To re-enable it later:
 
-1. Create a Supabase project.
-2. Add the public env vars to Vercel and local `.env.local`.
-3. Replace the in-memory seed rows with table reads/writes.
-4. Keep `verifiedDate` manual and separate from standard save actions.
+1. Set `NEXT_PUBLIC_ENABLE_SUPABASE=true`.
+2. Add the Supabase env vars to Vercel and local `.env.local`.
+3. Keep `verifiedDate` manual and separate from standard save actions.
 
 ## Phase 2
 
