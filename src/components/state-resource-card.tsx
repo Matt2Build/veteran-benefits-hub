@@ -19,7 +19,7 @@ export function StateResourceCard({ entry }: { entry: StateResourceEntry }) {
   }
 
   return (
-    <article className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.94))] p-6 shadow-[0_22px_58px_rgba(16,33,50,0.08)]">
+    <article className="flex h-full flex-col rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.94))] p-5 shadow-[0_22px_58px_rgba(16,33,50,0.08)] md:p-6">
       <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
         {topic.shortTitle}
       </p>
@@ -32,12 +32,15 @@ export function StateResourceCard({ entry }: { entry: StateResourceEntry }) {
 
       <div className="mt-5 flex flex-wrap gap-2">
         {providers.map((provider) => (
-          <span
+          <a
             key={provider.id}
+            href={provider.href}
+            target="_blank"
+            rel="noreferrer"
             className="rounded-full border border-[color:var(--line)] bg-white/80 px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
           >
             {provider.name}
-          </span>
+          </a>
         ))}
       </div>
 
@@ -52,10 +55,10 @@ export function StateResourceCard({ entry }: { entry: StateResourceEntry }) {
         ))}
       </ul>
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-6 flex flex-wrap gap-3 md:mt-auto md:pt-6">
         <Link
           href={`/resources/${entry.topicSlug}`}
-          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white"
+          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white [&&]:text-white [&_svg]:text-white"
         >
           Open guide
           <ArrowUpRight className="h-4 w-4" />

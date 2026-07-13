@@ -8,6 +8,7 @@ import { ProviderCard } from "@/components/provider-card";
 import { StateResourceCard } from "@/components/state-resource-card";
 import { TrackedBenefitCard } from "@/components/tracked-benefit-card";
 import {
+  categories,
   getAllStateSlugs,
   getBenefitsByState,
   getNeighborStates,
@@ -65,6 +66,10 @@ export default async function StatePage({
   const stateResourceEntries = getStateResourceEntries(state.slug);
   const publishedBenefitCount = allBenefits.filter((benefit) => benefit.published).length;
   const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
+  const trackedGridClassName =
+    allBenefits.length > 2
+      ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+      : "grid gap-6 md:grid-cols-2";
 
   const faqSchema = benefits.length
     ? {
@@ -99,7 +104,7 @@ export default async function StatePage({
         />
       ) : null}
 
-      <section className="grid gap-8 xl:grid-cols-[1.05fr_0.95fr]">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_28rem] xl:items-start">
         <div className="space-y-5">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
             State page
@@ -147,7 +152,7 @@ export default async function StatePage({
             </div>
           </div>
         </div>
-        <aside className="rounded-[2.25rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_30px_80px_rgba(16,33,50,0.10)]">
+        <aside className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-5 shadow-[0_24px_60px_rgba(16,33,50,0.10)] md:p-6">
           <div className="flex items-start gap-3">
             <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[color:rgba(184,144,69,0.14)] text-[color:var(--navy)]">
               <MapPinned className="h-5 w-5" />
@@ -161,18 +166,43 @@ export default async function StatePage({
               </h2>
             </div>
           </div>
-          <ul className="mt-6 space-y-3">
-            {stateResourceEntries.slice(0, 3).map((entry) => (
-              <li
+          <ul className="mt-5 space-y-3">
+            {stateResourceEntries.slice(0, 3).map((entry) => {
+              const compareCategory = categories.find(
+                (category) => category.slug === entry.compareCategorySlugs[0],
+              );
+
+              return (
+                <li
                 key={entry.id}
-                className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 text-sm leading-7 text-[color:var(--muted)]"
+                className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4"
               >
-                <span className="font-semibold text-[color:var(--foreground)]">
-                  {entry.title}:
-                </span>{" "}
-                {entry.summary}
+                <p className="text-base font-semibold text-[color:var(--foreground)]">
+                  {entry.title}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                  {entry.quickChecks[0] ?? entry.summary}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link
+                    href={`/resources/${entry.topicSlug}`}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+                  >
+                    Open guide
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  {compareCategory ? (
+                    <Link
+                      href={`/compare/${compareCategory.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--muted)]"
+                    >
+                      Compare {compareCategory.shortLabel}
+                    </Link>
+                  ) : null}
+                </div>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </aside>
       </section>
@@ -200,7 +230,7 @@ export default async function StatePage({
             Every state now shows the same core tracked-benefits inventory so users can see what is already published and what is still in verification.
           </p>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className={trackedGridClassName}>
           {allBenefits.map((benefit) => (
             <TrackedBenefitCard key={benefit.id} benefit={benefit} />
           ))}
@@ -224,7 +254,7 @@ export default async function StatePage({
             The complete resource map for {state.name}
           </h2>
         </div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {stateResourceEntries.map((entry) => (
             <StateResourceCard key={entry.id} entry={entry} />
           ))}
