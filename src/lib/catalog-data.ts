@@ -103,6 +103,10 @@ export function getStateCatalogEntries(): StateCatalogEntry[] {
   });
 }
 
+export function getStateCatalogEntryBySlug(stateSlug: string) {
+  return getStateCatalogEntries().find((entry) => entry.stateSlug === stateSlug);
+}
+
 export function getProviderDirectoryRecords() {
   return providerDirectoryGroups.map((group) => ({
     ...group,

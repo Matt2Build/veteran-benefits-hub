@@ -75,34 +75,34 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[2.5rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_34px_90px_rgba(16,33,50,0.12)]">
-          <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
-            <div className="space-y-4 rounded-[1.75rem] border border-[color:rgba(214,219,226,0.72)] bg-white/75 p-5">
+        <div className="overflow-hidden rounded-[2.5rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_34px_90px_rgba(16,33,50,0.12)] lg:p-7">
+          <div className="space-y-5">
+            <div className="space-y-3">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
                 Start with a state
               </p>
-              <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Find the fastest path into benefits, support, and official help.
+              <h2 className="max-w-lg text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Pick a state and move directly into benefits, guides, and official providers.
               </h2>
-              <p className="text-base leading-7 text-[color:var(--muted)]">
-                State pages should do more than answer one tax question. They should route Veterans toward the right next step, even before every policy row is finished.
+              <p className="max-w-lg text-base leading-7 text-[color:var(--muted)]">
+                Every state page starts with the same core help map, then layers in verified state facts as the policy database goes live.
               </p>
-              <div className="grid gap-3">
-                <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:rgba(184,144,69,0.08)] p-4">
-                  <div className="flex items-center gap-3">
-                    <Database className="h-5 w-5 text-[color:var(--accent)]" />
-                    <p className="text-sm font-semibold text-[color:var(--foreground)]">
-                      Structured guide data for every resource lane
-                    </p>
-                  </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:rgba(184,144,69,0.08)] p-4">
+                <div className="flex items-center gap-3">
+                  <Database className="h-5 w-5 text-[color:var(--accent)]" />
+                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                    Structured guide data across all major support lanes
+                  </p>
                 </div>
-                <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/80 p-4">
-                  <div className="flex items-center gap-3">
-                    <MapPinned className="h-5 w-5 text-[color:var(--accent)]" />
-                    <p className="text-sm font-semibold text-[color:var(--foreground)]">
-                      State pages tied to compare views, support lanes, and official providers
-                    </p>
-                  </div>
+              </div>
+              <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/80 p-4">
+                <div className="flex items-center gap-3">
+                  <MapPinned className="h-5 w-5 text-[color:var(--accent)]" />
+                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
+                    State pages tied to compare views, providers, and next-step guidance
+                  </p>
                 </div>
               </div>
             </div>
@@ -111,6 +111,63 @@ export default function HomePage() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-3">
+        <article className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.96))] p-6 shadow-[0_18px_56px_rgba(16,33,50,0.08)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            State database
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            50 pages with one structure
+          </h2>
+          <p className="mt-3 text-base leading-7 text-[color:var(--muted)]">
+            Every state page is built to hold verified facts, support lanes, compare links, and official providers in one usable place.
+          </p>
+          <Link
+            href="/states"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Browse state database
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </article>
+        <article className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.96))] p-6 shadow-[0_18px_56px_rgba(16,33,50,0.08)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Guide database
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Help paths organized by real needs
+          </h2>
+          <p className="mt-3 text-base leading-7 text-[color:var(--muted)]">
+            Disability, health care, housing, education, employment, crisis support, family help, and later-life planning each have their own lane.
+          </p>
+          <Link
+            href="/resources"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Browse guide database
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </article>
+        <article className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.96))] p-6 shadow-[0_18px_56px_rgba(16,33,50,0.08)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Provider database
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Official channels surfaced first
+          </h2>
+          <p className="mt-3 text-base leading-7 text-[color:var(--muted)]">
+            The provider directory keeps the main federal systems visible, so users can get to the right program instead of circling through generic advice.
+          </p>
+          <Link
+            href="/providers"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Browse provider database
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </article>
       </section>
 
       <section className="space-y-6">
