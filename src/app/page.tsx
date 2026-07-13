@@ -1,17 +1,15 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Compass,
   Database,
-  MapPinned,
   ShieldCheck,
   TableProperties,
 } from "lucide-react";
 import { categories } from "@/lib/data";
 import { DatabaseStatCard } from "@/components/database-stat-card";
 import { ProviderCard } from "@/components/provider-card";
+import { ResourceSelector } from "@/components/resource-selector";
 import { ResourceTopicCard } from "@/components/resource-topic-card";
-import { StateSelector } from "@/components/state-selector";
 import { getDatabaseStats } from "@/lib/catalog-data";
 import {
   getFeaturedResourceTopics,
@@ -25,23 +23,58 @@ export default function HomePage() {
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-20 px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
-      <section className="grid gap-10 xl:grid-cols-[1.05fr_0.95fr] xl:items-stretch">
-        <div className="space-y-8 py-4">
-          <div className="inline-flex items-center gap-3 rounded-full border border-[color:var(--line)] bg-white/75 px-4 py-2 text-sm font-medium text-[color:var(--muted)] shadow-[0_12px_32px_rgba(16,33,50,0.08)]">
+      <section className="relative overflow-hidden rounded-[2.75rem] border border-[color:var(--line)] bg-[radial-gradient(circle_at_top,rgba(184,144,69,0.18),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(246,240,228,0.94))] p-6 shadow-[0_34px_90px_rgba(16,33,50,0.12)] sm:p-8 lg:p-10">
+        <div className="absolute inset-x-0 top-0 h-48 bg-[radial-gradient(circle_at_center,rgba(18,37,58,0.10),transparent_68%)]" />
+        <div className="relative space-y-8">
+          <div className="inline-flex items-center gap-3 rounded-full border border-[color:var(--line)] bg-white/78 px-4 py-2 text-sm font-medium text-[color:var(--muted)] shadow-[0_12px_32px_rgba(16,33,50,0.08)]">
             <ShieldCheck className="h-4 w-4 text-[color:var(--accent)]" />
             Veteran-built. Source-first. Plain English.
           </div>
-          <div className="space-y-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
-              Veteran Benefits Hub
-            </p>
-            <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-6xl">
-              A one-stop veteran benefits and resource hub, built to be usable.
-            </h1>
-            <p className="max-w-2xl text-lg leading-8 text-[color:var(--muted)]">
-              Built by a veteran who has navigated this system firsthand. The mission is bigger than tax tables: benefits, health care, education, housing, caregiver help, mental health support, and the official providers Veterans actually need.
-            </p>
+          <div className="grid gap-10 xl:grid-cols-[1.15fr_0.85fr] xl:items-end">
+            <div className="space-y-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+                Veteran Benefits Hub
+              </p>
+              <h1 className="max-w-5xl text-5xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-6xl lg:text-7xl">
+                Thank you for your service.
+              </h1>
+              <h2 className="max-w-4xl text-3xl font-semibold tracking-tight text-[color:var(--navy)] sm:text-4xl">
+                How can we serve you?
+              </h2>
+              <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted)]">
+                Start with the problem you need solved. Disability, health care, housing, education, employment, crisis support, family help, and official providers should be reachable in one step.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-white/78 p-5 shadow-[0_18px_42px_rgba(16,33,50,0.08)]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+                  Verified facts
+                </p>
+                <p className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Every published row keeps the source and the verification date visible.
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-white/78 p-5 shadow-[0_18px_42px_rgba(16,33,50,0.08)]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
+                  Official channels
+                </p>
+                <p className="mt-3 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Guides route users back into VA and other official provider lanes instead of dead ends.
+                </p>
+              </div>
+              <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.82)] bg-[linear-gradient(180deg,rgba(18,37,58,0.96),rgba(25,45,66,0.92))] p-5 text-white shadow-[0_22px_54px_rgba(16,33,50,0.18)]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">
+                  One-stop path
+                </p>
+                <p className="mt-3 text-xl font-semibold tracking-tight text-white">
+                  Resource-first guidance up front, then state-specific policy and comparison data underneath it.
+                </p>
+              </div>
+            </div>
           </div>
+
+          <ResourceSelector />
+
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {databaseStats.map((stat) => (
               <DatabaseStatCard key={stat.label} stat={stat} />
@@ -52,15 +85,8 @@ export default function HomePage() {
               href="/resources"
               className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-5 py-3 text-sm font-semibold text-white shadow-[0_12px_32px_rgba(16,33,50,0.18)] [&&]:text-white [&_svg]:text-white"
             >
-              <Compass className="h-4 w-4" />
-              Browse resource hub
-            </Link>
-            <Link
-              href="/states"
-              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--surface)] px-5 py-3 text-sm font-semibold text-[color:var(--foreground)] shadow-[0_12px_32px_rgba(16,33,50,0.08)] transition hover:border-[color:var(--accent)]"
-            >
-              <TableProperties className="h-4 w-4 text-[color:var(--accent)]" />
-              Browse all states
+              Browse all resource guides
+              <ArrowRight className="h-4 w-4" />
             </Link>
             {categories.map((category) => (
               <Link
@@ -72,43 +98,6 @@ export default function HomePage() {
                 {category.label}
               </Link>
             ))}
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-[2.5rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_34px_90px_rgba(16,33,50,0.12)] lg:p-7">
-          <div className="space-y-5">
-            <div className="space-y-3">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                Start with a state
-              </p>
-              <h2 className="max-w-lg text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Pick a state and move directly into benefits, guides, and official providers.
-              </h2>
-              <p className="max-w-lg text-base leading-7 text-[color:var(--muted)]">
-                Every state page starts with the same core help map, then layers in verified state facts as the policy database goes live.
-              </p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-[color:rgba(184,144,69,0.08)] p-4">
-                <div className="flex items-center gap-3">
-                  <Database className="h-5 w-5 text-[color:var(--accent)]" />
-                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
-                    Structured guide data across all major support lanes
-                  </p>
-                </div>
-              </div>
-              <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/80 p-4">
-                <div className="flex items-center gap-3">
-                  <MapPinned className="h-5 w-5 text-[color:var(--accent)]" />
-                  <p className="text-sm font-semibold text-[color:var(--foreground)]">
-                    State pages tied to compare views, providers, and next-step guidance
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-[1.75rem] border border-[color:rgba(214,219,226,0.72)] bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(255,250,242,0.72))] p-5">
-              <StateSelector />
-            </div>
           </div>
         </div>
       </section>
@@ -124,6 +113,10 @@ export default function HomePage() {
           <p className="mt-3 text-base leading-7 text-[color:var(--muted)]">
             Every state page is built to hold verified facts, support lanes, compare links, and official providers in one usable place.
           </p>
+          <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--navy)]">
+            <Database className="h-3.5 w-3.5 text-[color:var(--accent)]" />
+            Structure before scale
+          </div>
           <Link
             href="/states"
             className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
