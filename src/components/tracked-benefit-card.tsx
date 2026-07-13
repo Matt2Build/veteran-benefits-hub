@@ -12,7 +12,7 @@ export function TrackedBenefitCard({ benefit }: { benefit: BenefitRecord }) {
           <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
             {benefit.categoryGroup}
           </p>
-          <h3 className="text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+          <h3 className="text-lg font-semibold tracking-tight text-[color:var(--foreground)] md:text-xl">
             {benefit.question}
           </h3>
         </div>
@@ -25,7 +25,7 @@ export function TrackedBenefitCard({ benefit }: { benefit: BenefitRecord }) {
         )}
       </div>
 
-      <p className="mt-4 text-sm leading-7 text-[color:var(--muted)]">
+      <p className="mt-4 text-sm leading-6 text-[color:var(--muted)]">
         {benefit.summary}
       </p>
 

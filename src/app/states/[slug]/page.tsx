@@ -17,6 +17,7 @@ import {
 } from "@/lib/data";
 import {
   getCoreResourceProviders,
+  getProvidersByIds,
   getStateResourceEntries,
 } from "@/lib/resource-data";
 
@@ -96,7 +97,7 @@ export default async function StatePage({
   );
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 py-12 sm:px-6 lg:px-8 lg:gap-12 lg:py-16">
       {faqSchema ? (
         <script
           type="application/ld+json"
@@ -104,20 +105,23 @@ export default async function StatePage({
         />
       ) : null}
 
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_28rem] xl:items-start">
-        <div className="space-y-5">
+      <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start xl:grid-cols-[minmax(0,1fr)_26rem]">
+        <div className="space-y-4">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
             State page
           </p>
-          <h1 className="text-5xl font-semibold tracking-tight text-[color:var(--foreground)]">
+          <h1 className="text-4xl font-semibold tracking-tight text-[color:var(--foreground)] sm:text-5xl">
             {state.name} veteran benefits
           </h1>
-          <p className="max-w-3xl text-lg leading-8 text-[color:var(--muted)]">
+          <p className="max-w-3xl text-lg leading-7 text-[color:var(--muted)]">
             {state.hasDeepDive
               ? "Published facts for Utah are live now and follow the intended editorial standard."
               : `${state.name} is in the 50-state footprint. This page combines live state-specific benefits with the national support lanes Veterans still need.`}
           </p>
-          <div className="grid max-w-3xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="inline-flex rounded-full border border-[color:var(--line)] bg-white/82 px-4 py-2 text-sm font-medium text-[color:var(--navy)] shadow-[0_12px_30px_rgba(16,33,50,0.06)]">
+            Published rows only go live after the answer, source, and verified date are attached.
+          </div>
+          <div className="grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
                 Tracked benefits
@@ -152,7 +156,7 @@ export default async function StatePage({
             </div>
           </div>
         </div>
-        <aside className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-5 shadow-[0_24px_60px_rgba(16,33,50,0.10)] md:p-6">
+        <aside className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-4 shadow-[0_24px_60px_rgba(16,33,50,0.10)] md:p-5">
           <div className="flex items-start gap-3">
             <span className="grid h-12 w-12 place-items-center rounded-[1.25rem] bg-[color:rgba(184,144,69,0.14)] text-[color:var(--navy)]">
               <MapPinned className="h-5 w-5" />
@@ -161,46 +165,60 @@ export default async function StatePage({
               <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
                 Resource map
               </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              <h2 className="mt-2 text-[1.75rem] font-semibold tracking-tight leading-tight text-[color:var(--foreground)]">
                 The support lanes Veterans in {state.name} usually need first
               </h2>
             </div>
           </div>
-          <ul className="mt-5 space-y-3">
+          <ul className="mt-4 grid gap-3">
             {stateResourceEntries.slice(0, 3).map((entry) => {
               const compareCategory = categories.find(
                 (category) => category.slug === entry.compareCategorySlugs[0],
               );
+              const previewProviders = getProvidersByIds(entry.providerIds).slice(0, 2);
 
               return (
                 <li
-                key={entry.id}
-                className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4"
-              >
-                <p className="text-base font-semibold text-[color:var(--foreground)]">
-                  {entry.title}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                  {entry.quickChecks[0] ?? entry.summary}
-                </p>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <Link
-                    href={`/resources/${entry.topicSlug}`}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
-                  >
-                    Open guide
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  {compareCategory ? (
+                  key={entry.id}
+                  className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4"
+                >
+                  <p className="text-base font-semibold text-[color:var(--foreground)]">
+                    {entry.title}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                    {entry.quickChecks[0] ?? entry.summary}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {previewProviders.map((provider) => (
+                      <a
+                        key={provider.id}
+                        href={provider.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-full border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
+                      >
+                        {provider.name}
+                      </a>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-3">
                     <Link
-                      href={`/compare/${compareCategory.slug}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--muted)]"
+                      href={`/resources/${entry.topicSlug}`}
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
                     >
-                      Compare {compareCategory.shortLabel}
+                      Open guide
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
-                  ) : null}
-                </div>
-              </li>
+                    {compareCategory ? (
+                      <Link
+                        href={`/compare/${compareCategory.slug}`}
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--muted)]"
+                      >
+                        Compare {compareCategory.shortLabel}
+                      </Link>
+                    ) : null}
+                  </div>
+                </li>
               );
             })}
           </ul>
@@ -218,7 +236,7 @@ export default async function StatePage({
         </section>
       ) : null}
 
-      <section className="space-y-6">
+      <section className="space-y-5">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
             State coverage
@@ -226,8 +244,8 @@ export default async function StatePage({
           <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
             Benefits currently tracked in {state.name}
           </h2>
-          <p className="max-w-3xl text-base leading-8 text-[color:var(--muted)]">
-            Every state now shows the same core tracked-benefits inventory so users can see what is already published and what is still in verification.
+          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+            Every state uses the same tracked-benefits structure so users can see what is already published and what is still in verification.
           </p>
         </div>
         <div className={trackedGridClassName}>
@@ -245,7 +263,7 @@ export default async function StatePage({
         </div>
       </section>
 
-      <section className="space-y-6">
+      <section className="space-y-5">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
             Start here in {state.name}
@@ -253,8 +271,11 @@ export default async function StatePage({
           <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
             The complete resource map for {state.name}
           </h2>
+          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+            These guides route people into the official benefit and provider lanes most likely to solve the next real problem.
+          </p>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
           {stateResourceEntries.map((entry) => (
             <StateResourceCard key={entry.id} entry={entry} />
           ))}
@@ -263,7 +284,7 @@ export default async function StatePage({
 
       {benefits.length ? (
         Object.entries(groupedBenefits).map(([group, records]) => (
-          <section key={group} className="space-y-6">
+          <section key={group} className="space-y-5">
             <div className="space-y-2">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
                 {group}
@@ -285,7 +306,7 @@ export default async function StatePage({
         </section>
       )}
 
-      <section className="space-y-6">
+      <section className="space-y-5">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
             Official providers
@@ -302,7 +323,7 @@ export default async function StatePage({
       </section>
 
       {neighbors.length ? (
-        <section className="space-y-5">
+        <section className="space-y-4">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
               Compare nearby
