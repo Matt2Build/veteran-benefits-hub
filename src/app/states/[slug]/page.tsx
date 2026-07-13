@@ -4,12 +4,18 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { ArrowRight } from "lucide-react";
 import { BenefitCard } from "@/components/benefit-card";
+import { ProviderCard } from "@/components/provider-card";
+import { ResourceTopicCard } from "@/components/resource-topic-card";
 import {
   getAllStateSlugs,
   getNeighborStates,
   getPublishedBenefitsByState,
   getStateBySlug,
 } from "@/lib/data";
+import {
+  getCoreResourceProviders,
+  resourceTopics,
+} from "@/lib/resource-data";
 
 export const revalidate = 3600;
 
@@ -17,12 +23,13 @@ export function generateStaticParams() {
   return getAllStateSlugs().map((slug) => ({ slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
-}): Metadata {
-  const state = getStateBySlug(params.slug);
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const state = getStateBySlug(slug);
   if (!state) {
     return {};
   }
@@ -41,15 +48,18 @@ export function generateMetadata({
 export default async function StatePage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const state = getStateBySlug(params.slug);
+  const { slug } = await params;
+  const state = getStateBySlug(slug);
   if (!state) {
     notFound();
   }
 
   const benefits = await getPublishedBenefitsByState(state.slug);
   const neighbors = getNeighborStates(state.slug);
+  const coreProviders = getCoreResourceProviders().slice(0, 4);
+  const featuredTopics = resourceTopics.slice(0, 4);
 
   const faqSchema = benefits.length
     ? {
@@ -109,6 +119,22 @@ export default async function StatePage({
         </section>
       ) : null}
 
+      <section className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Start here in {state.name}
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            The help lanes Veterans most commonly need
+          </h2>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {featuredTopics.map((topic) => (
+            <ResourceTopicCard key={topic.slug} topic={topic} compact />
+          ))}
+        </div>
+      </section>
+
       {benefits.length ? (
         Object.entries(groupedBenefits).map(([group, records]) => (
           <section key={group} className="space-y-6">
@@ -129,9 +155,25 @@ export default async function StatePage({
         ))
       ) : (
         <section className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8 text-base leading-8 text-[color:var(--muted)]">
-          No published benefits yet. This state stays public so users can see the roadmap, but facts will only appear once the row is sourced, verified, and explicitly published.
+          No published state-specific benefits yet. This page still stays useful by surfacing the federal help paths, provider guides, and comparison structure while the state policy detail is being built out.
         </section>
       )}
+
+      <section className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Official providers
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Core national providers that still matter in {state.name}
+          </h2>
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          {coreProviders.map((provider) => (
+            <ProviderCard key={provider.id} provider={provider} />
+          ))}
+        </div>
+      </section>
 
       {neighbors.length ? (
         <section className="space-y-5">

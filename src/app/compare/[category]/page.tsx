@@ -13,12 +13,13 @@ export function generateStaticParams() {
   return getAllCategorySlugs().map((category) => ({ category }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
-  params: { category: string };
-}): Metadata {
-  const category = getCategoryBySlug(params.category);
+  params: Promise<{ category: string }>;
+}): Promise<Metadata> {
+  const { category: categorySlug } = await params;
+  const category = getCategoryBySlug(categorySlug);
   if (!category) {
     return {};
   }
@@ -32,9 +33,10 @@ export function generateMetadata({
 export default async function CompareCategoryPage({
   params,
 }: {
-  params: { category: string };
+  params: Promise<{ category: string }>;
 }) {
-  const category = getCategoryBySlug(params.category);
+  const { category: categorySlug } = await params;
+  const category = getCategoryBySlug(categorySlug);
   if (!category) {
     notFound();
   }

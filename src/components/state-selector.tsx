@@ -7,7 +7,7 @@ import { states } from "@/lib/seed-data";
 
 export function StateSelector() {
   const router = useRouter();
-  const [value, setValue] = useState("utah");
+  const [value, setValue] = useState(states[0]?.slug ?? "alabama");
 
   return (
     <section className="space-y-6">
@@ -46,16 +46,13 @@ export function StateSelector() {
           <Link
             key={state.slug}
             href={`/states/${state.slug}`}
-            className={`rounded-2xl border px-3 py-3 text-center text-sm font-semibold transition ${
-              state.slug === "utah"
-                ? "border-[color:var(--accent)] bg-[color:var(--accent-soft)] text-[color:var(--navy)]"
-                : "border-[color:var(--line)] bg-[color:var(--surface)] text-[color:var(--muted)] hover:border-[color:var(--navy)] hover:text-[color:var(--foreground)]"
-            }`}
+            aria-label={state.name}
+            title={state.name}
+            className="rounded-2xl border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-3 text-center text-sm font-semibold text-[color:var(--muted)] transition hover:border-[color:var(--navy)] hover:text-[color:var(--foreground)]"
           >
-            <span className="block text-xs uppercase tracking-[0.18em]">
+            <span className="block text-base uppercase tracking-[0.18em]">
               {state.code}
             </span>
-            <span className="mt-1 block truncate">{state.name}</span>
           </Link>
         ))}
       </div>

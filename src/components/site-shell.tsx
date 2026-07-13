@@ -24,8 +24,9 @@ export function SiteShell({
             </div>
           </Link>
           <nav className="flex items-center gap-5 text-sm font-medium text-[color:var(--muted)]">
+            <Link href="/states">States</Link>
+            <Link href="/resources">Resources</Link>
             <Link href="/compare/military-retirement-pay">Compare</Link>
-            <Link href="/states/utah">Utah</Link>
             <Link href="/about">About</Link>
             <Link href="/admin">Admin</Link>
           </nav>
