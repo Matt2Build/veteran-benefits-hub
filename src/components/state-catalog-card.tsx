@@ -28,7 +28,15 @@ export function StateCatalogCard({ entry }: { entry: StateCatalogEntry }) {
       <div className="mt-5 grid grid-cols-3 gap-3">
         <div className="rounded-[1.1rem] border border-[color:var(--line)] bg-white/80 px-3 py-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Facts
+            Tracked
+          </p>
+          <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
+            {entry.trackedBenefitCount}
+          </p>
+        </div>
+        <div className="rounded-[1.1rem] border border-[color:var(--line)] bg-white/80 px-3 py-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Published
           </p>
           <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
             {entry.publishedBenefitCount}
@@ -40,14 +48,6 @@ export function StateCatalogCard({ entry }: { entry: StateCatalogEntry }) {
           </p>
           <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
             {entry.resourceGuideCount}
-          </p>
-        </div>
-        <div className="rounded-[1.1rem] border border-[color:var(--line)] bg-white/80 px-3 py-3">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Compare
-          </p>
-          <p className="mt-2 text-lg font-semibold text-[color:var(--foreground)]">
-            {entry.compareCategoryCount}
           </p>
         </div>
       </div>

@@ -163,9 +163,14 @@ export const seedBenefitRecords = [
           category.slug === "military-retirement-pay"
             ? `Does ${state.name} tax military retirement pay?`
             : `What disabled veteran property tax relief is available in ${state.name}?`,
-        summary: "Benefits profile in review.",
+        summary:
+          category.slug === "military-retirement-pay"
+            ? `${state.name}'s military retirement tax treatment is in the verification queue. Use the comparison table and the state's tax authority while this row is being finalized.`
+            : `${state.name}'s disabled veteran property tax rules are in the verification queue. Use the comparison table and local tax authorities while this row is being finalized.`,
         detailMd:
-          "This row is reserved for the 50-state comparison dataset. Publish it once the policy has been sourced and explicitly verified.",
+          category.slug === "military-retirement-pay"
+            ? `This ${state.name} retirement-pay row is already part of the 50-state tracking database. The editorial standard for publishing it is a direct answer, the official source, and a visible verification date. Until then, use the comparison view to see coverage status and return here when the row is verified.`
+            : `This ${state.name} property-tax row is already part of the 50-state tracking database. The editorial standard for publishing it is a direct answer, any disability threshold that matters, the official source, and a visible verification date. Until then, use the comparison view to see coverage status and return here when the row is verified.`,
         status: "conditional",
         published: false,
         featuredInComparison: true,

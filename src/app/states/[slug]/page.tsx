@@ -2,12 +2,14 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { ArrowRight, MapPinned } from "lucide-react";
+import { ArrowRight, Database, MapPinned } from "lucide-react";
 import { BenefitCard } from "@/components/benefit-card";
 import { ProviderCard } from "@/components/provider-card";
 import { StateResourceCard } from "@/components/state-resource-card";
+import { TrackedBenefitCard } from "@/components/tracked-benefit-card";
 import {
   getAllStateSlugs,
+  getBenefitsByState,
   getNeighborStates,
   getPublishedBenefitsByState,
   getStateBySlug,
@@ -56,10 +58,13 @@ export default async function StatePage({
     notFound();
   }
 
+  const allBenefits = await getBenefitsByState(state.slug);
   const benefits = await getPublishedBenefitsByState(state.slug);
   const neighbors = getNeighborStates(state.slug);
   const coreProviders = getCoreResourceProviders();
   const stateResourceEntries = getStateResourceEntries(state.slug);
+  const publishedBenefitCount = allBenefits.filter((benefit) => benefit.published).length;
+  const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
 
   const faqSchema = benefits.length
     ? {
@@ -107,6 +112,40 @@ export default async function StatePage({
               ? "Published facts for Utah are live now and follow the intended editorial standard."
               : `${state.name} is in the 50-state footprint. This page combines live state-specific benefits with the national support lanes Veterans still need.`}
           </p>
+          <div className="grid max-w-3xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Tracked benefits
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                {allBenefits.length}
+              </p>
+            </div>
+            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Published facts
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                {publishedBenefitCount}
+              </p>
+            </div>
+            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Guide lanes
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                {stateResourceEntries.length}
+              </p>
+            </div>
+            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Providers linked
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                {providerCount}
+              </p>
+            </div>
+          </div>
         </div>
         <aside className="rounded-[2.25rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_30px_80px_rgba(16,33,50,0.10)]">
           <div className="flex items-start gap-3">
@@ -148,6 +187,33 @@ export default async function StatePage({
           </div>
         </section>
       ) : null}
+
+      <section className="space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            State coverage
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Benefits currently tracked in {state.name}
+          </h2>
+          <p className="max-w-3xl text-base leading-8 text-[color:var(--muted)]">
+            Every state now shows the same core tracked-benefits inventory so users can see what is already published and what is still in verification.
+          </p>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {allBenefits.map((benefit) => (
+            <TrackedBenefitCard key={benefit.id} benefit={benefit} />
+          ))}
+        </div>
+        <div className="rounded-[1.75rem] border border-[color:var(--line)] bg-[color:rgba(184,144,69,0.08)] p-5">
+          <div className="flex items-start gap-3">
+            <Database className="mt-0.5 h-5 w-5 text-[color:var(--accent)]" />
+            <p className="text-sm leading-7 text-[color:var(--foreground)]">
+              Published rows always keep the answer, source, and verified date visible. Unpublished rows stay on the page so the statewide coverage footprint is transparent instead of hidden.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section className="space-y-6">
         <div className="space-y-2">

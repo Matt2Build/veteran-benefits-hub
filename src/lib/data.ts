@@ -71,6 +71,11 @@ export async function getPublishedBenefitsByState(stateSlug: string) {
   );
 }
 
+export async function getBenefitsByState(stateSlug: string) {
+  const records = await getAllBenefits();
+  return records.filter((record) => record.stateSlug === stateSlug);
+}
+
 export async function getBenefitsForAdmin() {
   return getAllBenefits();
 }

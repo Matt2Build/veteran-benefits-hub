@@ -67,7 +67,15 @@ export function StateSelector() {
           <div className="mt-4 grid grid-cols-3 gap-3">
             <div className="rounded-[1rem] border border-[color:var(--line)] bg-white/82 px-3 py-3">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Facts
+                Tracked
+              </p>
+              <p className="mt-2 text-xl font-semibold text-[color:var(--foreground)]">
+                {selectedEntry.trackedBenefitCount}
+              </p>
+            </div>
+            <div className="rounded-[1rem] border border-[color:var(--line)] bg-white/82 px-3 py-3">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                Published
               </p>
               <p className="mt-2 text-xl font-semibold text-[color:var(--foreground)]">
                 {selectedEntry.publishedBenefitCount}
@@ -79,14 +87,6 @@ export function StateSelector() {
               </p>
               <p className="mt-2 text-xl font-semibold text-[color:var(--foreground)]">
                 {selectedEntry.resourceGuideCount}
-              </p>
-            </div>
-            <div className="rounded-[1rem] border border-[color:var(--line)] bg-white/82 px-3 py-3">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Compare
-              </p>
-              <p className="mt-2 text-xl font-semibold text-[color:var(--foreground)]">
-                {selectedEntry.compareCategoryCount}
               </p>
             </div>
           </div>

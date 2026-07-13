@@ -11,6 +11,7 @@ export interface StateCatalogEntry {
   stateSlug: string;
   stateCode: string;
   stateName: string;
+  trackedBenefitCount: number;
   publishedBenefitCount: number;
   resourceGuideCount: number;
   compareCategoryCount: number;
@@ -79,6 +80,9 @@ export function getDatabaseStats(): DatabaseStat[] {
 
 export function getStateCatalogEntries(): StateCatalogEntry[] {
   return states.map((state) => {
+    const trackedBenefitCount = seedBenefitRecords.filter(
+      (record) => record.stateSlug === state.slug,
+    ).length;
     const publishedBenefitCount = seedBenefitRecords.filter(
       (record) => record.stateSlug === state.slug && record.published,
     ).length;
@@ -89,6 +93,7 @@ export function getStateCatalogEntries(): StateCatalogEntry[] {
       stateSlug: state.slug,
       stateCode: state.code,
       stateName: state.name,
+      trackedBenefitCount,
       publishedBenefitCount,
       resourceGuideCount,
       compareCategoryCount,
