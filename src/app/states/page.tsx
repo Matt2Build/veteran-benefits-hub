@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { states } from "@/lib/seed-data";
+import { DatabaseStatCard } from "@/components/database-stat-card";
+import { StateCatalogCard } from "@/components/state-catalog-card";
+import { getDatabaseStats, getStateCatalogEntries } from "@/lib/catalog-data";
 
 export const metadata: Metadata = {
   title: "States",
@@ -9,8 +11,11 @@ export const metadata: Metadata = {
 };
 
 export default function StatesIndexPage() {
+  const stats = getDatabaseStats();
+  const stateEntries = getStateCatalogEntries();
+
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-12 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
       <section className="space-y-5">
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
           States
@@ -23,20 +28,45 @@ export default function StatesIndexPage() {
         </p>
       </section>
 
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
-        {states.map((state) => (
-          <Link
-            key={state.slug}
-            href={`/states/${state.slug}`}
-            aria-label={state.name}
-            title={state.name}
-            className="rounded-[1.5rem] border border-[color:var(--line)] bg-[color:var(--surface)] px-4 py-5 text-center text-[color:var(--foreground)] shadow-[0_14px_40px_rgba(16,33,50,0.08)] transition hover:border-[color:var(--navy)]"
-          >
-            <span className="block text-2xl font-semibold tracking-[0.18em]">
-              {state.code}
-            </span>
-          </Link>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {stats.map((stat) => (
+          <DatabaseStatCard key={stat.label} stat={stat} />
         ))}
+      </section>
+
+      <section className="space-y-5">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            State database
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Browse the state catalog, not just a grid of abbreviations
+          </h2>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {stateEntries.map((entry) => (
+            <StateCatalogCard key={entry.stateSlug} entry={entry} />
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-6 shadow-[0_18px_50px_rgba(16,33,50,0.08)]">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Provider database
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              Browse the official provider directory behind the guides
+            </h2>
+          </div>
+          <Link
+            href="/providers"
+            className="inline-flex items-center justify-center rounded-full bg-[color:var(--navy)] px-5 py-3 text-sm font-semibold text-white"
+          >
+            Open provider database
+          </Link>
+        </div>
       </section>
     </div>
   );

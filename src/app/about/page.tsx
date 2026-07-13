@@ -1,4 +1,7 @@
 import { Metadata } from "next";
+import Link from "next/link";
+import { DatabaseStatCard } from "@/components/database-stat-card";
+import { getDatabaseStats } from "@/lib/catalog-data";
 
 export const metadata: Metadata = {
   title: "About",
@@ -7,6 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
+  const stats = getDatabaseStats();
+
   return (
     <div className="mx-auto max-w-5xl px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
       <div className="space-y-12">
@@ -39,6 +44,36 @@ export default function AboutPage() {
               Placeholder for the founder story. The site is positioned as veteran-built, grounded in hands-on experience, and focused on practical clarity over directory sprawl.
             </p>
           </article>
+        </section>
+
+        <section className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Current databases
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              The site is being built as a structured database, not just a content site
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {stats.map((stat) => (
+              <DatabaseStatCard key={stat.label} stat={stat} />
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/states"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-5 py-3 text-sm font-semibold text-white"
+            >
+              Browse state database
+            </Link>
+            <Link
+              href="/providers"
+              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/82 px-5 py-3 text-sm font-semibold text-[color:var(--foreground)]"
+            >
+              Browse provider database
+            </Link>
+          </div>
         </section>
 
         <section className="rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-8 shadow-[0_16px_48px_rgba(16,33,50,0.08)]">

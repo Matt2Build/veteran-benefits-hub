@@ -8,9 +8,11 @@ import {
   TableProperties,
 } from "lucide-react";
 import { categories } from "@/lib/data";
+import { DatabaseStatCard } from "@/components/database-stat-card";
 import { ProviderCard } from "@/components/provider-card";
 import { ResourceTopicCard } from "@/components/resource-topic-card";
 import { StateSelector } from "@/components/state-selector";
+import { getDatabaseStats } from "@/lib/catalog-data";
 import {
   getFeaturedResourceTopics,
   getCoreResourceProviders,
@@ -19,6 +21,7 @@ import {
 export default function HomePage() {
   const coreProviders = getCoreResourceProviders().slice(0, 4);
   const featuredTopics = getFeaturedResourceTopics();
+  const databaseStats = getDatabaseStats();
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-20 px-5 py-12 sm:px-6 lg:px-8 lg:py-20">
@@ -39,40 +42,10 @@ export default function HomePage() {
               Built by a veteran who has navigated this system firsthand. The mission is bigger than tax tables: benefits, health care, education, housing, caregiver help, mental health support, and the official providers Veterans actually need.
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <article className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/72 p-5 shadow-[0_18px_40px_rgba(16,33,50,0.06)]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
-                Coverage
-              </p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                50
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                state pages in the footprint
-              </p>
-            </article>
-            <article className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/72 p-5 shadow-[0_18px_40px_rgba(16,33,50,0.06)]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
-                Help lanes
-              </p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                8
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                resource guides built around real needs
-              </p>
-            </article>
-            <article className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/72 p-5 shadow-[0_18px_40px_rgba(16,33,50,0.06)]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
-                Standard
-              </p>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                1
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                visible source and verified date on live facts
-              </p>
-            </article>
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {databaseStats.map((stat) => (
+              <DatabaseStatCard key={stat.label} stat={stat} />
+            ))}
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -159,16 +132,25 @@ export default function HomePage() {
       <section className="space-y-6">
         <div className="space-y-2">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Official providers
+            Databases
           </p>
           <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            The providers most Veterans actually need to find
+            Browse the official provider database behind the guides
           </h2>
         </div>
         <div className="grid gap-6 lg:grid-cols-2">
           {coreProviders.map((provider) => (
             <ProviderCard key={provider.id} provider={provider} compact />
           ))}
+        </div>
+        <div>
+          <Link
+            href="/providers"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Open the full provider database
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 

@@ -26,6 +26,7 @@ export function SiteShell({
           <nav className="flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/70 p-2 text-sm font-medium text-[color:var(--muted)] shadow-[0_12px_32px_rgba(16,33,50,0.06)]">
             <Link href="/states" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">States</Link>
             <Link href="/resources" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">Resources</Link>
+            <Link href="/providers" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">Providers</Link>
             <Link href="/compare/military-retirement-pay" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">Compare</Link>
             <Link href="/about" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">About</Link>
             <Link href="/admin" className="rounded-full px-4 py-2 transition hover:bg-[color:var(--accent-soft)] hover:text-[color:var(--foreground)]">Admin</Link>
