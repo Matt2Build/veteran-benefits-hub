@@ -4,6 +4,7 @@ import {
   BenefitRecord,
   StateDefinition,
 } from "@/lib/types";
+import generatedStateBenefits from "@/lib/generated-state-benefits.json";
 
 export const states: StateDefinition[] = [
   { slug: "alabama", code: "AL", name: "Alabama" },
@@ -149,33 +150,10 @@ const utahPublishedBenefits: BenefitRecord[] = [
 ];
 
 export const seedBenefitRecords = [
+  ...(generatedStateBenefits as BenefitRecord[]).filter(
+    (benefit) => benefit.stateSlug !== "utah",
+  ),
   ...utahPublishedBenefits,
-  ...states
-    .filter((state) => state.slug !== "utah")
-    .flatMap((state) =>
-      categories.map<BenefitRecord>((category) => ({
-        id: `${state.slug}-${category.slug}`,
-        stateSlug: state.slug,
-        category: category.slug,
-        categoryGroup:
-          category.slug === "military-retirement-pay" ? "Taxes" : "Housing",
-        question:
-          category.slug === "military-retirement-pay"
-            ? `Does ${state.name} tax military retirement pay?`
-            : `What disabled veteran property tax relief is available in ${state.name}?`,
-        summary:
-          category.slug === "military-retirement-pay"
-            ? `${state.name}'s military retirement tax treatment is in the verification queue. Use the comparison table and the state's tax authority while this row is being finalized.`
-            : `${state.name}'s disabled veteran property tax rules are in the verification queue. Use the comparison table and local tax authorities while this row is being finalized.`,
-        detailMd:
-          category.slug === "military-retirement-pay"
-            ? `This ${state.name} retirement-pay row is already part of the 50-state tracking database. The editorial standard for publishing it is a direct answer, the official source, and a visible verification date. Until then, use the comparison view to see coverage status and return here when the row is verified.`
-            : `This ${state.name} property-tax row is already part of the 50-state tracking database. The editorial standard for publishing it is a direct answer, any disability threshold that matters, the official source, and a visible verification date. Until then, use the comparison view to see coverage status and return here when the row is verified.`,
-        status: "conditional",
-        published: false,
-        featuredInComparison: true,
-      })),
-    ),
 ];
 
 const stateMap = new Map(states.map((state) => [state.slug, state]));

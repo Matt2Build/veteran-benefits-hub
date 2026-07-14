@@ -38,7 +38,7 @@ export interface StateResourceEntry {
   compareCategorySlugs: BenefitCategorySlug[];
 }
 
-export const resourceProviders: ResourceProvider[] = [
+const nationalResourceProviders: ResourceProvider[] = [
   {
     id: "va-disability",
     name: "VA disability compensation",
@@ -220,6 +220,70 @@ export const resourceProviders: ResourceProvider[] = [
       "A human starting point when the system feels unclear",
     ],
   },
+];
+
+function buildStateBenefitsDirectoryProvider(stateSlug: string) {
+  const state = getStateBySlug(stateSlug);
+  if (!state) {
+    return null;
+  }
+
+  const statePath = state.name.replaceAll(" ", "-");
+
+  return {
+    id: `${state.slug}-benefits-directory`,
+    name: `${state.name} military and veterans benefits`,
+    description:
+      `Official ${state.name} benefits directory covering statewide tax, education, employment, housing, and service-member support programs.`,
+    href: `https://myarmybenefits.us.army.mil/Benefit-Library/State/Territory-Benefits/${statePath}`,
+    ctaLabel: `Open ${state.name} benefits directory`,
+    audience: `Veterans and families in ${state.name}`,
+    typeLabel: "Official state benefits directory",
+    highlights: [
+      "State-specific benefit programs",
+      "Official links grouped by category",
+      "A fast way to confirm what exists in-state",
+    ],
+  } satisfies ResourceProvider;
+}
+
+function buildStateResourceLocatorProvider(stateSlug: string) {
+  const state = getStateBySlug(stateSlug);
+  if (!state) {
+    return null;
+  }
+
+  const statePath = state.name.replaceAll(" ", "-");
+
+  return {
+    id: `${state.slug}-resource-locator`,
+    name: `${state.name} military resource locator`,
+    description:
+      `Official ${state.name} resource locator that points Veterans and families toward local offices, support programs, and nearby assistance channels.`,
+    href: `https://myarmybenefits.us.army.mil/Benefit-Library/Resource-Locator/${statePath}`,
+    ctaLabel: `Open ${state.name} resource locator`,
+    audience: `Anyone trying to find in-state help in ${state.name}`,
+    typeLabel: "Official in-state resource finder",
+    highlights: [
+      "Local offices and support contacts",
+      "In-state program and agency links",
+      "Useful when the next step needs to be local, not generic",
+    ],
+  } satisfies ResourceProvider;
+}
+
+const stateResourceProviders = states.flatMap((state) => {
+  const benefitsDirectory = buildStateBenefitsDirectoryProvider(state.slug);
+  const resourceLocator = buildStateResourceLocatorProvider(state.slug);
+
+  return [benefitsDirectory, resourceLocator].filter(
+    (provider): provider is ResourceProvider => Boolean(provider),
+  );
+});
+
+export const resourceProviders: ResourceProvider[] = [
+  ...nationalResourceProviders,
+  ...stateResourceProviders,
 ];
 
 export const resourceTopics: ResourceTopic[] = [
@@ -430,6 +494,57 @@ const providerMap = new Map(
   resourceProviders.map((provider) => [provider.id, provider]),
 );
 
+const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> = {
+  "disability-claims": (stateSlug) => [
+    `${stateSlug}-resource-locator`,
+    `${stateSlug}-benefits-directory`,
+    "va-disability",
+    "va-vso",
+  ],
+  "health-care": (stateSlug) => [
+    `${stateSlug}-resource-locator`,
+    `${stateSlug}-benefits-directory`,
+    "va-health-care",
+    "va-locations",
+  ],
+  "education-training": (stateSlug) => [
+    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-resource-locator`,
+    "va-education",
+    "va-vre",
+  ],
+  "housing-homelessness": (stateSlug) => [
+    `${stateSlug}-resource-locator`,
+    `${stateSlug}-benefits-directory`,
+    "va-housing",
+    "va-locations",
+  ],
+  "jobs-and-employment": (stateSlug) => [
+    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-resource-locator`,
+    "va-vre",
+    "va-education",
+  ],
+  "mental-health-and-crisis": (stateSlug) => [
+    `${stateSlug}-resource-locator`,
+    "vcl",
+    "va-health-care",
+    "va-locations",
+  ],
+  "family-caregiver-and-spouse": (stateSlug) => [
+    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-resource-locator`,
+    "va-caregiver",
+    "women-vets",
+  ],
+  "pension-survivors-and-later-life": (stateSlug) => [
+    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-resource-locator`,
+    "va-pension",
+    "va-burial",
+  ],
+};
+
 export function getResourceTopicBySlug(slug: string) {
   return topicMap.get(slug);
 }
@@ -462,6 +577,14 @@ export function getCoreResourceProviders() {
   ]);
 }
 
+export function getStateOfficialProviders(stateSlug: string) {
+  return getProvidersByIds([
+    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-resource-locator`,
+    "va-locations",
+  ]);
+}
+
 export function getFeaturedResourceTopics() {
   return resourceTopics.slice(0, 4);
 }
@@ -481,15 +604,18 @@ export function getStateResourceEntries(stateSlug: string): StateResourceEntry[]
     const compareSuffix = compareLabels.length
       ? ` In ${state.name}, also check ${compareLabels.join(" and ")}.`
       : "";
+    const providerIds =
+      topicProviderBuilderMap[topic.slug]?.(state.slug) ?? topic.providerIds;
 
     return {
       id: `${state.slug}-${topic.slug}`,
       stateSlug: state.slug,
       topicSlug: topic.slug,
-      title: `${state.name} ${topic.shortTitle.toLowerCase()} guide`,
-      summary: `${topic.summary}${compareSuffix}`,
-      quickChecks: topic.quickChecks.slice(0, 2),
-      providerIds: topic.providerIds.slice(0, 2),
+      title: `${topic.title} in ${state.name}`,
+      summary:
+        `${topic.summary} Start with ${state.name}'s official benefits directory and resource locator, then move into the federal provider path that matches the need.${compareSuffix}`,
+      quickChecks: topic.quickChecks.slice(0, 3),
+      providerIds,
       compareCategorySlugs,
     };
   });

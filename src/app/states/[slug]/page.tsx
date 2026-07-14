@@ -18,6 +18,7 @@ import {
 import {
   getCoreResourceProviders,
   getProvidersByIds,
+  getStateOfficialProviders,
   getStateResourceEntries,
 } from "@/lib/resource-data";
 
@@ -39,13 +40,11 @@ export async function generateMetadata({
   }
 
   return {
-    title: state.slug === "utah"
-      ? "Does Utah Tax Military Retirement Pay?"
-      : `${state.name} veteran benefits`,
+    title: `Does ${state.name} Tax Military Retirement Pay?`,
     description:
       state.slug === "utah"
         ? "Utah veteran benefits, including military retirement tax treatment and property tax relief, with source links and verification dates."
-        : `${state.name} veteran benefits coverage is being built. Published facts will include source links and verification dates.`,
+        : `${state.name} veteran benefits, including military retirement pay treatment and disabled veteran property tax relief, with source links and verification dates.`,
   };
 }
 
@@ -64,6 +63,7 @@ export default async function StatePage({
   const benefits = await getPublishedBenefitsByState(state.slug);
   const neighbors = getNeighborStates(state.slug);
   const coreProviders = getCoreResourceProviders();
+  const stateOfficialProviders = getStateOfficialProviders(state.slug);
   const stateResourceEntries = getStateResourceEntries(state.slug);
   const publishedBenefitCount = allBenefits.filter((benefit) => benefit.published).length;
   const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
@@ -155,6 +155,31 @@ export default async function StatePage({
               </p>
             </div>
           </div>
+          <div className="grid max-w-5xl gap-3 lg:grid-cols-3">
+            {stateOfficialProviders.map((provider) => (
+              <a
+                key={provider.id}
+                href={provider.href}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-[1.45rem] border border-[color:var(--line)] bg-white/86 p-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)] transition hover:-translate-y-0.5 hover:border-[color:rgba(184,144,69,0.36)]"
+              >
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                  {provider.typeLabel}
+                </p>
+                <p className="mt-3 text-lg font-semibold tracking-tight text-[color:var(--foreground)]">
+                  {provider.name}
+                </p>
+                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                  {provider.description}
+                </p>
+                <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.22)]">
+                  {provider.ctaLabel}
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </span>
+              </a>
+            ))}
+          </div>
         </div>
         <aside className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-4 shadow-[0_24px_60px_rgba(16,33,50,0.10)] md:p-5">
           <div className="flex items-start gap-3">
@@ -204,15 +229,15 @@ export default async function StatePage({
                   <div className="mt-4 flex flex-wrap gap-3">
                     <Link
                       href={`/resources/${entry.topicSlug}`}
-                      className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+                      className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.22)] transition hover:bg-[#0f2337] hover:text-white"
                     >
-                      Open guide
-                      <ArrowRight className="h-4 w-4" />
+                      <span className="text-white">Open guide</span>
+                      <ArrowRight className="h-4 w-4 text-white" />
                     </Link>
                     {compareCategory ? (
                       <Link
                         href={`/compare/${compareCategory.slug}`}
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--muted)]"
+                        className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
                       >
                         Compare {compareCategory.shortLabel}
                       </Link>

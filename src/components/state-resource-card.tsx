@@ -58,9 +58,9 @@ export function StateResourceCard({ entry }: { entry: StateResourceEntry }) {
       <div className="mt-5 flex flex-wrap gap-3 md:mt-auto md:pt-5">
         <Link
           href={`/resources/${entry.topicSlug}`}
-          className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white [&&]:text-white [&_svg]:text-white"
+          className="inline-flex items-center gap-2 rounded-full border border-[color:rgba(184,144,69,0.24)] bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.24)] transition hover:-translate-y-0.5 hover:bg-[#0f2337] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)] [&_svg]:text-white"
         >
-          Open guide
+          <span className="text-white">Open guide</span>
           <ArrowUpRight className="h-4 w-4" />
         </Link>
         {compareCategory ? (
