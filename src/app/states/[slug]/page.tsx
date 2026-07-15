@@ -9,7 +9,6 @@ import { StateSectionNav } from "@/components/state-section-nav";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDate } from "@/lib/format";
 import {
-  categories,
   getAllStateSlugs,
   getBenefitsByState,
   getNeighborStates,
@@ -18,7 +17,6 @@ import {
 } from "@/lib/data";
 import {
   getCoreResourceProviders,
-  getProvidersByIds,
   getStateOfficialProviders,
   getStateResourceEntries,
 } from "@/lib/resource-data";
@@ -94,15 +92,14 @@ export default async function StatePage({
   const groupedBenefits = benefits.reduce<Record<string, typeof benefits>>(
     (groups, benefit) => {
       groups[benefit.categoryGroup] ??= [];
-          groups[benefit.categoryGroup].push(benefit);
-          return groups;
-        },
+      groups[benefit.categoryGroup].push(benefit);
+      return groups;
+    },
     {},
   );
-  const featuredResources = stateResourceEntries.slice(0, 4);
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 py-12 sm:px-6 lg:px-8 lg:gap-12 lg:py-16">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-5 py-10 sm:px-6 lg:px-8 lg:gap-10 lg:py-14">
       {faqSchema ? (
         <script
           type="application/ld+json"
@@ -110,7 +107,7 @@ export default async function StatePage({
         />
       ) : null}
 
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_24rem] xl:items-start">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
         <div className="space-y-4">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
             State page
@@ -131,7 +128,7 @@ export default async function StatePage({
               {publishedBenefitCount} verified facts live now
             </span>
           </div>
-          <div className="grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid max-w-4xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
                 Verified facts
@@ -194,69 +191,50 @@ export default async function StatePage({
                 Resource map
               </p>
               <h2 className="mt-2 text-[1.75rem] font-semibold tracking-tight leading-tight text-[color:var(--foreground)]">
-                The fastest starting points in {state.name}
+                The fastest way to start in {state.name}
               </h2>
             </div>
           </div>
-          <ul className="mt-4 grid gap-3">
-            {featuredResources.map((entry) => {
-              const compareCategory = categories.find(
-                (category) => category.slug === entry.compareCategorySlugs[0],
-              );
-              const previewProviders = getProvidersByIds(entry.providerIds).slice(0, 2);
-
-              return (
-                <li
-                  key={entry.id}
-                  className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/82 px-4 py-4"
-                >
-                  <p className="text-base font-semibold text-[color:var(--foreground)]">
-                    {entry.title}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                    {entry.quickChecks[0] ?? entry.summary}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {previewProviders.map((provider) => (
-                      <a
-                        key={provider.id}
-                        href={provider.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="rounded-full border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
-                      >
-                        {provider.name}
-                      </a>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <Link
-                      href={`/resources/${entry.topicSlug}`}
-                      className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.22)] transition hover:bg-[#0f2337] hover:text-white"
-                    >
-                      <span className="text-white">Open guide</span>
-                      <ArrowRight className="h-4 w-4 text-white" />
-                    </Link>
-                    {compareCategory ? (
-                      <Link
-                        href={`/compare/${compareCategory.slug}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
-                      >
-                        Compare {compareCategory.shortLabel}
-                      </Link>
-                    ) : null}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="mt-4 grid gap-3">
+            <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/84 px-4 py-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
+                Start here
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                Pick the lane that matches the need, use the in-state directory first, then move into the federal provider path.
+              </p>
+            </div>
+            <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/84 px-4 py-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
+                What is live
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                {publishedBenefitCount} published state facts are live now, and {unpublishedBenefitCount} tracked rows are still in source review.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 pt-1">
+              <a
+                href="#help-now"
+                className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.22)]"
+              >
+                <span className="text-white">Browse sections</span>
+                <ArrowRight className="h-4 w-4 text-white" />
+              </a>
+              <a
+                href="#verified-facts"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/82 px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
+              >
+                View verified facts
+              </a>
+            </div>
+          </div>
         </aside>
       </section>
 
       <StateSectionNav links={quickJumpLinks} />
 
-      <section id="help-now" className="grid scroll-mt-28 gap-6 xl:grid-cols-[minmax(0,1.15fr)_0.85fr]">
-        <div className="rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 shadow-[0_20px_60px_rgba(16,33,50,0.08)]">
+      <section id="help-now" className="scroll-mt-28 rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-[0_20px_60px_rgba(16,33,50,0.08)] md:p-6">
+        <div className="space-y-5">
           <div className="space-y-2">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
               Get help now
@@ -268,16 +246,8 @@ export default async function StatePage({
               Each lane below points into the official providers and state-specific support paths people usually need first.
             </p>
           </div>
-          <div className="mt-5 grid gap-4">
-            {stateResourceEntries.map((entry) => (
-              <StateResourceListItem key={entry.id} entry={entry} />
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
           {state.introMd ? (
-            <section className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,240,228,0.92))] p-6 shadow-[0_20px_60px_rgba(16,33,50,0.08)]">
+            <section className="rounded-[1.6rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,240,228,0.92))] p-5 shadow-[0_16px_42px_rgba(16,33,50,0.06)]">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
                 Flagship deep dive
               </p>
@@ -287,71 +257,79 @@ export default async function StatePage({
             </section>
           ) : null}
 
-          <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
-            <div className="space-y-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                Official state channels
-              </p>
-              <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Use the in-state doors first
-              </h2>
-            </div>
-            <div className="mt-4 space-y-3">
-              {stateOfficialProviders.map((provider) => (
-                <a
-                  key={provider.id}
-                  href={provider.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
-                >
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                      {provider.typeLabel}
-                    </p>
-                    <p className="mt-2 text-base font-semibold text-[color:var(--foreground)]">
-                      {provider.name}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                      {provider.description}
-                    </p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
+          <div className="grid gap-4 xl:grid-cols-2">
+            {stateResourceEntries.map((entry) => (
+              <StateResourceListItem key={entry.id} entry={entry} />
+            ))}
+          </div>
 
-          <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
-            <div className="space-y-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                Core national channels
-              </p>
-              <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                Keep the federal paths visible
-              </h2>
-            </div>
-            <div className="mt-4 space-y-3">
-              {coreProviders.map((provider) => (
-                <a
-                  key={provider.id}
-                  href={provider.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-start justify-between gap-3 rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
-                >
-                  <div>
-                    <p className="text-base font-semibold text-[color:var(--foreground)]">
-                      {provider.name}
-                    </p>
-                    <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
-                      {provider.description}
-                    </p>
-                  </div>
-                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-[color:var(--navy)]" />
-                </a>
-              ))}
-            </div>
-          </section>
+          <div className="grid gap-4 xl:grid-cols-2">
+            <section className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                  Official state channels
+                </p>
+                <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Use the in-state doors first
+                </h2>
+              </div>
+              <div className="mt-4 space-y-3">
+                {stateOfficialProviders.map((provider) => (
+                  <a
+                    key={provider.id}
+                    href={provider.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
+                  >
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                        {provider.typeLabel}
+                      </p>
+                      <p className="mt-2 text-base font-semibold text-[color:var(--foreground)]">
+                        {provider.name}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                        {provider.description}
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+
+            <section className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                  Core national channels
+                </p>
+                <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Keep the federal paths visible
+                </h2>
+              </div>
+              <div className="mt-4 space-y-3">
+                {coreProviders.map((provider) => (
+                  <a
+                    key={provider.id}
+                    href={provider.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-start justify-between gap-3 rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
+                  >
+                    <div>
+                      <p className="text-base font-semibold text-[color:var(--foreground)]">
+                        {provider.name}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                        {provider.description}
+                      </p>
+                    </div>
+                    <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-[color:var(--navy)]" />
+                  </a>
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
       </section>
 

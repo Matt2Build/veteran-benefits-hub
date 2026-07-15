@@ -14,6 +14,7 @@ export function StateResourceListItem({
 }) {
   const topic = getResourceTopicBySlug(entry.topicSlug);
   const providers = getProvidersByIds(entry.providerIds).slice(0, 3);
+  const quickChecks = entry.quickChecks.slice(0, 3);
   const compareCategory = categories.find(
     (category) => category.slug === entry.compareCategorySlugs[0],
   );
@@ -23,8 +24,8 @@ export function StateResourceListItem({
   }
 
   return (
-    <article className="rounded-[1.5rem] border border-[color:var(--line)] bg-white/86 p-4 shadow-[0_14px_36px_rgba(16,33,50,0.05)]">
-      <div className="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+    <article className="rounded-[1.5rem] border border-[color:var(--line)] bg-white/90 p-4 shadow-[0_14px_32px_rgba(16,33,50,0.05)]">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="space-y-2">
           <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
             {topic.shortTitle}
@@ -44,6 +45,19 @@ export function StateResourceListItem({
         {entry.summary}
       </p>
 
+      {quickChecks.length ? (
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {quickChecks.map((check) => (
+            <li
+              key={check}
+              className="rounded-[1rem] border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-sm leading-6 text-[color:var(--muted)]"
+            >
+              {check}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
       <div className="mt-3 flex flex-wrap gap-2">
         {providers.map((provider) => (
           <a
@@ -58,28 +72,12 @@ export function StateResourceListItem({
         ))}
       </div>
 
-      <details className="mt-4 rounded-[1.25rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-3">
-        <summary className="cursor-pointer list-none text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--navy)]">
-          Quick checks
-        </summary>
-        <ul className="mt-3 space-y-2">
-          {entry.quickChecks.map((check) => (
-            <li
-              key={check}
-              className="text-sm leading-6 text-[color:var(--muted)]"
-            >
-              {check}
-            </li>
-          ))}
-        </ul>
-      </details>
-
       <div className="mt-4 flex flex-wrap gap-3">
         <Link
           href={`/resources/${entry.topicSlug}`}
           className="inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.18)] transition hover:bg-[#0f2337] hover:text-white"
         >
-          Open guide
+          <span className="text-white">Open guide</span>
           <ArrowRight className="h-4 w-4 text-white" />
         </Link>
         {compareCategory ? (
