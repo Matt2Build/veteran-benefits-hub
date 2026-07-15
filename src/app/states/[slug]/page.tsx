@@ -68,8 +68,12 @@ export default async function StatePage({
   const unpublishedBenefitCount = allBenefits.length - publishedBenefitCount;
   const hasCoverageGaps = unpublishedBenefitCount > 0;
   const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
+  const verifiedSourceBenefits = benefits.filter(
+    (benefit) => benefit.sourceLabel && benefit.sourceUrl,
+  );
   const quickJumpLinks = [
     { id: "help-now", label: "Get help now" },
+    { id: "official-sources", label: "Official sources" },
     { id: "verified-facts", label: "Verified facts" },
     { id: "coverage-map", label: "Coverage map" },
     { id: "compare-nearby", label: "Compare nearby" },
@@ -169,20 +173,6 @@ export default async function StatePage({
               <p className="mt-1 text-sm text-[color:var(--muted)]">State and VA providers</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {stateOfficialProviders.map((provider) => (
-              <a
-                key={provider.id}
-                href={provider.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/86 px-4 py-3 text-sm font-semibold text-[color:var(--navy)] shadow-[0_12px_30px_rgba(16,33,50,0.06)] transition hover:border-[color:rgba(184,144,69,0.36)]"
-              >
-                {provider.name}
-                <ExternalLink className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
         </div>
         <aside className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,243,232,0.94))] p-4 shadow-[0_24px_60px_rgba(16,33,50,0.10)] md:p-5">
           <div className="flex items-start gap-3">
@@ -217,6 +207,14 @@ export default async function StatePage({
                   : `${publishedBenefitCount} published state facts are live now, with source links and verification dates attached to each one.`}
               </p>
             </div>
+            <div className="rounded-[1.25rem] border border-[color:var(--line)] bg-white/84 px-4 py-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
+                Official sources
+              </p>
+              <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                Every live fact below links back to a direct state or VA source. The official-source section groups those references in one place.
+              </p>
+            </div>
             <div className="flex flex-wrap gap-3 pt-1">
               <a
                 href="#help-now"
@@ -226,10 +224,10 @@ export default async function StatePage({
                 <ArrowRight className="h-4 w-4 text-white" />
               </a>
               <a
-                href="#verified-facts"
+                href="#official-sources"
                 className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/82 px-4 py-2 text-sm font-semibold text-[color:var(--navy)]"
               >
-                View verified facts
+                View official sources
               </a>
             </div>
           </div>
@@ -267,16 +265,81 @@ export default async function StatePage({
               <StateResourceListItem key={entry.id} entry={entry} />
             ))}
           </div>
+        </div>
+      </section>
 
-          <div className="grid gap-4 xl:grid-cols-2">
-            <section className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
+      <section id="official-sources" className="scroll-mt-28 space-y-5">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Official sources
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Official references and statewide directories
+          </h2>
+          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+            The source-backed state facts used on this page are grouped here first, followed by the statewide directories and national VA channels that keep the broader support path visible.
+          </p>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_0.9fr]">
+          <section className="rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-[0_18px_48px_rgba(16,33,50,0.06)]">
+            <div className="space-y-2">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                Verified state fact sources
+              </p>
+              <h3 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Direct references used for {state.name}
+              </h3>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {verifiedSourceBenefits.map((benefit) => (
+                <a
+                  key={benefit.id}
+                  href={benefit.sourceUrl ?? undefined}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/88 px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                        {benefit.categoryGroup}
+                      </p>
+                      <p className="mt-2 text-base font-semibold text-[color:var(--foreground)]">
+                        {benefit.question}
+                      </p>
+                    </div>
+                    <StatusBadge status={benefit.status} />
+                  </div>
+                  <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                    {benefit.summary}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm">
+                    <span className="font-semibold text-[color:var(--navy)]">
+                      {benefit.sourceLabel}
+                    </span>
+                    <span className="text-[color:var(--muted)]">
+                      Verified {formatDate(benefit.verifiedDate)}
+                    </span>
+                    <span className="inline-flex items-center gap-2 font-semibold text-[color:var(--navy)]">
+                      Open source
+                      <ExternalLink className="h-4 w-4" />
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <div className="grid gap-4">
+            <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
               <div className="space-y-2">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                  Official state channels
+                  Statewide directories
                 </p>
-                <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                  Use the in-state doors first
-                </h2>
+                <h3 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Use the broader in-state directories
+                </h3>
               </div>
               <div className="mt-4 space-y-3">
                 {stateOfficialProviders.map((provider) => (
@@ -303,14 +366,14 @@ export default async function StatePage({
               </div>
             </section>
 
-            <section className="rounded-[1.75rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
+            <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
               <div className="space-y-2">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                  Core national channels
+                  Core VA channels
                 </p>
-                <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                  Keep the federal paths visible
-                </h2>
+                <h3 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                  Keep the federal doors visible
+                </h3>
               </div>
               <div className="mt-4 space-y-3">
                 {coreProviders.map((provider) => (
