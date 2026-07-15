@@ -2,11 +2,12 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
-import { ArrowRight, Database, MapPinned } from "lucide-react";
-import { BenefitCard } from "@/components/benefit-card";
-import { ProviderCard } from "@/components/provider-card";
-import { StateResourceCard } from "@/components/state-resource-card";
-import { TrackedBenefitCard } from "@/components/tracked-benefit-card";
+import { ArrowRight, ExternalLink, MapPinned } from "lucide-react";
+import { BenefitAccordionItem } from "@/components/benefit-accordion-item";
+import { StateResourceListItem } from "@/components/state-resource-list-item";
+import { StateSectionNav } from "@/components/state-section-nav";
+import { StatusBadge } from "@/components/status-badge";
+import { formatDate } from "@/lib/format";
 import {
   categories,
   getAllStateSlugs,
@@ -66,11 +67,14 @@ export default async function StatePage({
   const stateOfficialProviders = getStateOfficialProviders(state.slug);
   const stateResourceEntries = getStateResourceEntries(state.slug);
   const publishedBenefitCount = allBenefits.filter((benefit) => benefit.published).length;
+  const unpublishedBenefitCount = allBenefits.length - publishedBenefitCount;
   const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
-  const trackedGridClassName =
-    allBenefits.length > 2
-      ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3"
-      : "grid gap-6 md:grid-cols-2";
+  const quickJumpLinks = [
+    { id: "help-now", label: "Get help now" },
+    { id: "verified-facts", label: "Verified facts" },
+    { id: "coverage-map", label: "Coverage map" },
+    { id: "compare-nearby", label: "Compare nearby" },
+  ];
 
   const faqSchema = benefits.length
     ? {
@@ -90,11 +94,12 @@ export default async function StatePage({
   const groupedBenefits = benefits.reduce<Record<string, typeof benefits>>(
     (groups, benefit) => {
       groups[benefit.categoryGroup] ??= [];
-      groups[benefit.categoryGroup].push(benefit);
-      return groups;
-    },
+          groups[benefit.categoryGroup].push(benefit);
+          return groups;
+        },
     {},
   );
+  const featuredResources = stateResourceEntries.slice(0, 4);
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 py-12 sm:px-6 lg:px-8 lg:gap-12 lg:py-16">
@@ -105,7 +110,7 @@ export default async function StatePage({
         />
       ) : null}
 
-      <section className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start xl:grid-cols-[minmax(0,1fr)_26rem]">
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_24rem] xl:items-start">
         <div className="space-y-4">
           <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[color:var(--muted)]">
             State page
@@ -118,25 +123,32 @@ export default async function StatePage({
               ? "Published facts for Utah are live now and follow the intended editorial standard."
               : `${state.name} is in the 50-state footprint. This page combines live state-specific benefits with the national support lanes Veterans still need.`}
           </p>
-          <div className="inline-flex rounded-full border border-[color:var(--line)] bg-white/82 px-4 py-2 text-sm font-medium text-[color:var(--navy)] shadow-[0_12px_30px_rgba(16,33,50,0.06)]">
-            Published rows only go live after the answer, source, and verified date are attached.
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex rounded-full border border-[color:var(--line)] bg-white/82 px-4 py-2 text-sm font-medium text-[color:var(--navy)] shadow-[0_12px_30px_rgba(16,33,50,0.06)]">
+              Published rows only go live after the answer, source, and verified date are attached.
+            </span>
+            <span className="inline-flex rounded-full border border-[color:rgba(184,144,69,0.28)] bg-[color:rgba(184,144,69,0.12)] px-4 py-2 text-sm font-medium text-[color:var(--navy)]">
+              {publishedBenefitCount} verified facts live now
+            </span>
           </div>
           <div className="grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Tracked benefits
-              </p>
-              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
-                {allBenefits.length}
-              </p>
-            </div>
-            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Published facts
+                Verified facts
               </p>
               <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
                 {publishedBenefitCount}
               </p>
+              <p className="mt-1 text-sm text-[color:var(--muted)]">Live on page</p>
+            </div>
+            <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                In research
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
+                {unpublishedBenefitCount}
+              </p>
+              <p className="mt-1 text-sm text-[color:var(--muted)]">Still being verified</p>
             </div>
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
@@ -145,38 +157,29 @@ export default async function StatePage({
               <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
                 {stateResourceEntries.length}
               </p>
+              <p className="mt-1 text-sm text-[color:var(--muted)]">Common needs covered</p>
             </div>
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                Providers linked
+                Official channels
               </p>
               <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
                 {providerCount}
               </p>
+              <p className="mt-1 text-sm text-[color:var(--muted)]">State and VA providers</p>
             </div>
           </div>
-          <div className="grid max-w-5xl gap-3 lg:grid-cols-3">
+          <div className="flex flex-wrap gap-3">
             {stateOfficialProviders.map((provider) => (
               <a
                 key={provider.id}
                 href={provider.href}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-[1.45rem] border border-[color:var(--line)] bg-white/86 p-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)] transition hover:-translate-y-0.5 hover:border-[color:rgba(184,144,69,0.36)]"
+                className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/86 px-4 py-3 text-sm font-semibold text-[color:var(--navy)] shadow-[0_12px_30px_rgba(16,33,50,0.06)] transition hover:border-[color:rgba(184,144,69,0.36)]"
               >
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                  {provider.typeLabel}
-                </p>
-                <p className="mt-3 text-lg font-semibold tracking-tight text-[color:var(--foreground)]">
-                  {provider.name}
-                </p>
-                <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                  {provider.description}
-                </p>
-                <span className="mt-4 inline-flex items-center gap-2 rounded-full bg-[color:var(--navy)] px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(10,20,34,0.22)]">
-                  {provider.ctaLabel}
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </span>
+                {provider.name}
+                <ExternalLink className="h-4 w-4" />
               </a>
             ))}
           </div>
@@ -191,12 +194,12 @@ export default async function StatePage({
                 Resource map
               </p>
               <h2 className="mt-2 text-[1.75rem] font-semibold tracking-tight leading-tight text-[color:var(--foreground)]">
-                The support lanes Veterans in {state.name} usually need first
+                The fastest starting points in {state.name}
               </h2>
             </div>
           </div>
           <ul className="mt-4 grid gap-3">
-            {stateResourceEntries.slice(0, 3).map((entry) => {
+            {featuredResources.map((entry) => {
               const compareCategory = categories.find(
                 (category) => category.slug === entry.compareCategorySlugs[0],
               );
@@ -250,113 +253,226 @@ export default async function StatePage({
         </aside>
       </section>
 
-      {state.introMd ? (
-        <section className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,240,228,0.92))] p-8 shadow-[0_20px_70px_rgba(16,33,50,0.10)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Flagship deep dive
-          </p>
-          <div className="prose-markdown mt-4 text-[color:var(--muted)]">
-            <ReactMarkdown>{state.introMd}</ReactMarkdown>
-          </div>
-        </section>
-      ) : null}
+      <StateSectionNav links={quickJumpLinks} />
 
-      <section className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            State coverage
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            Benefits currently tracked in {state.name}
-          </h2>
-          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
-            Every state uses the same tracked-benefits structure so users can see what is already published and what is still in verification.
-          </p>
-        </div>
-        <div className={trackedGridClassName}>
-          {allBenefits.map((benefit) => (
-            <TrackedBenefitCard key={benefit.id} benefit={benefit} />
-          ))}
-        </div>
-        <div className="rounded-[1.75rem] border border-[color:var(--line)] bg-[color:rgba(184,144,69,0.08)] p-5">
-          <div className="flex items-start gap-3">
-            <Database className="mt-0.5 h-5 w-5 text-[color:var(--accent)]" />
-            <p className="text-sm leading-7 text-[color:var(--foreground)]">
-              Published rows always keep the answer, source, and verified date visible. Unpublished rows stay on the page so the statewide coverage footprint is transparent instead of hidden.
+      <section id="help-now" className="grid scroll-mt-28 gap-6 xl:grid-cols-[minmax(0,1.15fr)_0.85fr]">
+        <div className="rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-6 shadow-[0_20px_60px_rgba(16,33,50,0.08)]">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Get help now
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              Start with a section, not a maze of cards
+            </h2>
+            <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+              Each lane below points into the official providers and state-specific support paths people usually need first.
             </p>
           </div>
+          <div className="mt-5 grid gap-4">
+            {stateResourceEntries.map((entry) => (
+              <StateResourceListItem key={entry.id} entry={entry} />
+            ))}
+          </div>
         </div>
-      </section>
 
-      <section className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Start here in {state.name}
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            The complete resource map for {state.name}
-          </h2>
-          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
-            These guides route people into the official benefit and provider lanes most likely to solve the next real problem.
-          </p>
-        </div>
-        <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
-          {stateResourceEntries.map((entry) => (
-            <StateResourceCard key={entry.id} entry={entry} />
-          ))}
-        </div>
-      </section>
+        <div className="space-y-4">
+          {state.introMd ? (
+            <section className="rounded-[2rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.96),rgba(245,240,228,0.92))] p-6 shadow-[0_20px_60px_rgba(16,33,50,0.08)]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                Flagship deep dive
+              </p>
+              <div className="prose-markdown mt-4 text-[color:var(--muted)]">
+                <ReactMarkdown>{state.introMd}</ReactMarkdown>
+              </div>
+            </section>
+          ) : null}
 
-      {benefits.length ? (
-        Object.entries(groupedBenefits).map(([group, records]) => (
-          <section key={group} className="space-y-5">
+          <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
             <div className="space-y-2">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-                {group}
+                Official state channels
               </p>
-              <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-                {group} benefits
+              <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Use the in-state doors first
               </h2>
             </div>
-            <div className="grid gap-6">
-              {records.map((benefit) => (
-                <BenefitCard key={benefit.id} benefit={benefit} />
+            <div className="mt-4 space-y-3">
+              {stateOfficialProviders.map((provider) => (
+                <a
+                  key={provider.id}
+                  href={provider.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
+                >
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
+                      {provider.typeLabel}
+                    </p>
+                    <p className="mt-2 text-base font-semibold text-[color:var(--foreground)]">
+                      {provider.name}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
+                      {provider.description}
+                    </p>
+                  </div>
+                </a>
               ))}
             </div>
           </section>
-        ))
-      ) : (
-        <section className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8 text-base leading-8 text-[color:var(--muted)]">
-          This state section does not currently have a published benefit record in this category. Use the official resource map and provider links above while the policy row remains in editorial review.
-        </section>
-      )}
 
-      <section className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-            Official providers
-          </p>
-          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-            Core national providers that still matter in {state.name}
-          </h2>
-        </div>
-        <div className="grid gap-6 lg:grid-cols-2">
-          {coreProviders.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} compact />
-          ))}
+          <section className="rounded-[2rem] border border-[color:var(--line)] bg-white/88 p-5 shadow-[0_16px_44px_rgba(16,33,50,0.08)]">
+            <div className="space-y-2">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                Core national channels
+              </p>
+              <h2 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                Keep the federal paths visible
+              </h2>
+            </div>
+            <div className="mt-4 space-y-3">
+              {coreProviders.map((provider) => (
+                <a
+                  key={provider.id}
+                  href={provider.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-start justify-between gap-3 rounded-[1.35rem] border border-[color:var(--line)] bg-[color:var(--background)] px-4 py-4 transition hover:border-[color:rgba(184,144,69,0.38)]"
+                >
+                  <div>
+                    <p className="text-base font-semibold text-[color:var(--foreground)]">
+                      {provider.name}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-[color:var(--muted)]">
+                      {provider.description}
+                    </p>
+                  </div>
+                  <ExternalLink className="mt-1 h-4 w-4 shrink-0 text-[color:var(--navy)]" />
+                </a>
+              ))}
+            </div>
+          </section>
         </div>
       </section>
 
-      {neighbors.length ? (
-        <section className="space-y-4">
-          <div className="space-y-2">
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
-              Compare nearby
-            </p>
-            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
-              Compare with neighboring states
-            </h2>
+      <section id="verified-facts" className="scroll-mt-28 space-y-5">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Verified facts
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Verified state tax answers in one place
+          </h2>
+          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+            Published entries stay collapsed until needed, but every one still carries its source link and last verified date.
+          </p>
+        </div>
+        {benefits.length ? (
+          <div className="grid gap-5 xl:grid-cols-2">
+            {Object.entries(groupedBenefits).map(([group, records]) => (
+              <section
+                key={group}
+                className="rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] p-5 shadow-[0_18px_48px_rgba(16,33,50,0.06)]"
+              >
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+                    {group}
+                  </p>
+                  <h3 className="text-2xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                    {group} answers
+                  </h3>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {records.map((benefit) => (
+                    <BenefitAccordionItem
+                      key={benefit.id}
+                      benefit={benefit}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
           </div>
+        ) : (
+          <section className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8 text-base leading-8 text-[color:var(--muted)]">
+            This state section does not currently have a published benefit record in this category. Use the official resource map and provider links above while the policy row remains in editorial review.
+          </section>
+        )}
+      </section>
+
+      <section id="coverage-map" className="scroll-mt-28 space-y-5">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Coverage map
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Everything currently tracked in {state.name}
+          </h2>
+          <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
+            Published and in-research rows stay visible here so users can see the full state footprint without hunting through multiple pages.
+          </p>
+        </div>
+        <section className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[0_18px_48px_rgba(16,33,50,0.06)]">
+          <div className="grid gap-0 divide-y divide-[color:var(--line)]">
+            {allBenefits.map((benefit) => (
+              <article
+                key={benefit.id}
+                className="grid gap-4 px-5 py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+              >
+                <div className="min-w-0 space-y-1">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
+                    {benefit.categoryGroup}
+                  </p>
+                  <h3 className="text-base font-semibold text-[color:var(--foreground)]">
+                    {benefit.question}
+                  </h3>
+                  <p className="text-sm leading-6 text-[color:var(--muted)]">
+                    {benefit.published
+                      ? benefit.summary
+                      : "Still in research. The state page keeps the topic visible so coverage gaps are clear while source verification is underway."}
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 md:items-end">
+                  {benefit.published ? (
+                    <StatusBadge status={benefit.status} />
+                  ) : (
+                    <span className="inline-flex rounded-full bg-[color:var(--background)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)] ring-1 ring-[color:var(--line)] ring-inset">
+                      In research
+                    </span>
+                  )}
+                  <p className="text-sm font-medium text-[color:var(--muted)]">
+                    {benefit.published && benefit.verifiedDate
+                      ? `Verified ${formatDate(benefit.verifiedDate)}`
+                      : "Not yet published"}
+                  </p>
+                  {benefit.published && benefit.sourceLabel && benefit.sourceUrl ? (
+                    <a
+                      href={benefit.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)] underline underline-offset-4"
+                    >
+                      {benefit.sourceLabel}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                  ) : null}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      </section>
+
+      <section id="compare-nearby" className="scroll-mt-28 space-y-5">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+            Compare nearby
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+            Compare with neighboring states
+          </h2>
+        </div>
+        {neighbors.length ? (
           <div className="grid gap-4 md:grid-cols-3">
             {neighbors.map((neighbor) => (
               <Link
@@ -377,8 +493,8 @@ export default async function StatePage({
               </Link>
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : null}
+      </section>
     </div>
   );
 }
