@@ -17,6 +17,82 @@ SEED_FILE = ROOT / "src" / "lib" / "seed-data.ts"
 OUTPUT_FILE = ROOT / "src" / "lib" / "generated-state-benefits.json"
 VERIFIED_DATE = "2026-07-14"
 
+PROPERTY_SOURCE_OVERRIDES: dict[str, tuple[str, str]] = {
+    "arkansas": (
+        "Arkansas DFA statement on disabled veteran property tax exemption",
+        "https://webftp.blr.arkansas.gov/Home/FTPDocument?path=Assembly%2F%2F2025%2F2025R%2FFiscal+Impacts%2FHB1072-DFA1.pdf",
+    ),
+}
+
+PROPERTY_RECORD_OVERRIDES: dict[str, dict[str, Any]] = {
+    "indiana": {
+        "summary": "Indiana lets qualifying disabled veterans deduct 50% to 100% of their homestead's assessed value from property tax, based on the VA disability rating.",
+        "detailMd": "To qualify, the veteran must have served at least 90 days, received an honorable discharge, and have at least a 50% disability. Indiana scales the deduction to the rating: a 50% disability yields a 50% deduction, a 60% disability yields a 60% deduction, and so on up to a 100% deduction at a 100% rating. Apply through the county using the Indiana Department of Veterans Affairs certificate of eligibility.",
+        "status": "partial",
+        "disabilityThreshold": "At least 50% disability",
+        "sourceLabel": "Indiana DVA disabled veteran property tax benefits",
+        "sourceUrl": "https://www.in.gov/dva/divisions/training-and-services/disabled-veteran-property-tax-deduction/",
+    },
+    "maine": {
+        "summary": "Maine gives qualifying veterans a $6,000 property tax exemption from the just value of the home, and certain totally and permanently disabled veterans can receive a $50,000 exemption for specially adapted housing.",
+        "detailMd": "A veteran qualifies for the $6,000 exemption if they served during a recognized war period and are age 62 or older, receive a 100% disability rating as a veteran, or became 100% disabled while serving. Maine Revenue Services also offers a $50,000 exemption for a veteran who received a federal grant for a specially adapted housing unit. Applications go to the local town office by April 1.",
+        "status": "partial",
+        "disabilityThreshold": "100% disability for the standard veteran exemption; specially adapted housing grant for the $50,000 disabled-veteran exemption",
+        "sourceLabel": "Maine Revenue Services property tax exemptions",
+        "sourceUrl": "https://www.maine.gov/revenue/taxes/tax-relief-credits-programs/property-tax-relief-programs/property-tax-exemptions",
+    },
+    "massachusetts": {
+        "summary": "Massachusetts offers local property tax exemptions for eligible veterans, disabled veterans, surviving spouses, and Gold Star parents when the municipality has adopted the exemption.",
+        "detailMd": "Exemption amounts depend on the veteran's status, disability classification, and local adoption. Massachusetts says qualifying veterans are entitled to a property tax exemption if their municipality has voted to accept the exemptions, and later HERO Act changes let municipalities expand certain veteran property tax relief.",
+        "status": "conditional",
+        "disabilityThreshold": None,
+        "sourceLabel": "Local Property Tax Exemptions for Veterans",
+        "sourceUrl": "https://www.mass.gov/info-details/local-property-tax-exemptions-for-veterans",
+    },
+    "michigan": {
+        "summary": "Michigan exempts an eligible disabled veteran's homestead from property tax, and an un-remarried surviving spouse can continue the exemption.",
+        "detailMd": "Michigan's disabled veteran exemption applies to real property used and owned as a homestead by a disabled veteran or the veteran's un-remarried surviving spouse. Eligibility generally turns on one of three paths: a total and permanent service-connected disability, VA assistance for specially adapted housing, or individual unemployability.",
+        "status": "full",
+        "disabilityThreshold": "Total and permanent disability, specially adapted housing assistance, or individual unemployability",
+        "sourceLabel": "Michigan disabled veterans exemption",
+        "sourceUrl": "https://www.michigan.gov/taxes/property/exemptions/veterans/disabled-veterans-exemption",
+    },
+    "south-carolina": {
+        "summary": "South Carolina fully exempts a qualifying disabled veteran's home and land, up to five acres, and up to two private passenger vehicles from property tax.",
+        "detailMd": "Veterans with a total, permanent, and service-connected disability can claim the exemption. Surviving spouses may also qualify. The South Carolina Department of Revenue says qualified veterans can apply through MyDORWAY and that recent law changes allow eligible disabled veterans to claim the real-property exemption beginning in the year the disability occurs, with limited retroactive relief.",
+        "status": "full",
+        "disabilityThreshold": "Total, permanent, and service-connected disability",
+        "sourceLabel": "South Carolina DOR veterans property tax exemptions",
+        "sourceUrl": "https://dor.sc.gov/tax-tips/veterans-learn-more-about-sc-property-tax-exemptions",
+    },
+    "vermont": {
+        "summary": "Vermont exempts $10,000 of appraised value on a qualifying veteran's residence, and towns may vote to raise that exemption to as much as $40,000.",
+        "detailMd": "A Vermont veteran, spouse, widow, widower, or child can qualify if the household is receiving VA or military disability compensation, death compensation, dependency and indemnity compensation, or a disability pension. State law requires filing with the Office of Veterans Affairs before May 1 in the first year, and the exemption remains until title is transferred. Towns may raise the exemption amount to as much as $40,000 of appraised value.",
+        "status": "partial",
+        "disabilityThreshold": "At least 50% disability compensation or other qualifying VA or military disability or death benefits",
+        "sourceLabel": "32 V.S.A. § 3802 veterans property tax exemption",
+        "sourceUrl": "https://legislature.vermont.gov/statutes/section/32/125/03802",
+    },
+    "washington": {
+        "summary": "Washington reduces property taxes for disabled veterans who own and occupy a primary residence and meet county income limits.",
+        "detailMd": "A veteran can qualify through the county assessor if they own and live in the home, meet the county income threshold, and have either an 80% or higher service-connected disability evaluation or VA compensation at the 100% rate for a service-connected disability. The exemption is part of Washington's property-tax program for seniors, people retired due to disability, and veterans with disabilities.",
+        "status": "conditional",
+        "disabilityThreshold": "At least 80% service-connected disability or VA compensation at the 100% rate",
+        "sourceLabel": "Washington DOR property tax exemption for veterans with disabilities",
+        "sourceUrl": "https://dor.wa.gov/taxes-rates/property-tax/property-tax-exemption-seniors-people-retired-due-disability-and-veterans-disabilities",
+    },
+}
+
+RETIREMENT_RECORD_OVERRIDES: dict[str, dict[str, Any]] = {
+    "louisiana": {
+        "summary": "Louisiana excludes federal retirement benefits, including military retirement pay, from Louisiana taxable income.",
+        "detailMd": "The Louisiana Department of Revenue says federal retirement benefits received by federal retirees, both military and nonmilitary, may be excluded from Louisiana taxable income. Federal benefits paid through a military survivor benefit plan may also be excluded.",
+        "status": "full",
+        "sourceLabel": "Louisiana retirement benefits exclusion FAQ",
+        "sourceUrl": "https://revenue.louisiana.gov/tax-education-and-faqs/faqs/individual-income-tax/is-there-a-list-of-retirement-system-benefits-that-may-be-excluded-from-louisiana-income-tax/",
+    }
+}
+
 
 def read_seed_source() -> str:
     return SEED_FILE.read_text()
@@ -279,6 +355,10 @@ def retirement_score(heading: str, block: str) -> int:
 
 def property_score(heading: str, block: str) -> int:
     score = 0
+    if heading.startswith("summary of"):
+        score -= 8
+    if heading.startswith("who is eligible"):
+        score -= 2
     if "property tax" in heading:
         score += 6
     if "homestead" in heading:
@@ -288,6 +368,11 @@ def property_score(heading: str, block: str) -> int:
     if "tax credit" in heading and "veteran" in heading:
         score += 3
     if "disabled veteran" in heading or "disabled veterans" in heading:
+        score += 3
+    if (
+        ("disabled veteran" in heading or "disabled veterans" in heading)
+        and ("property tax exemption" in heading or "homestead" in heading)
+    ):
         score += 3
     if "veteran" in heading:
         score += 1
@@ -459,6 +544,10 @@ def build_records() -> list[dict[str, Any]]:
             f"Army Benefits state guide: {state_name}",
             state_page_url,
         )
+        if state["slug"] in PROPERTY_SOURCE_OVERRIDES:
+            property_source_label, property_source_url = PROPERTY_SOURCE_OVERRIDES[
+                state["slug"]
+            ]
 
         retirement_record = {
             "id": f"{state['slug']}-military-retirement-pay",
@@ -494,6 +583,8 @@ def build_records() -> list[dict[str, Any]]:
             retirement_record["sourceLabel"] = f"Army Benefits state guide: {state_name}"
             retirement_record["sourceUrl"] = state_page_url
 
+        retirement_record.update(RETIREMENT_RECORD_OVERRIDES.get(state["slug"], {}))
+
         property_record = {
             "id": f"{state['slug']}-property-tax-exemption",
             "stateSlug": state["slug"],
@@ -518,8 +609,11 @@ def build_records() -> list[dict[str, Any]]:
             property_record["detailMd"] = (
                 f"The official {state_name} state benefits source should be used to confirm current disabled veteran property tax relief, thresholds, and local filing requirements."
             )
-            property_record["sourceLabel"] = f"Army Benefits state guide: {state_name}"
-            property_record["sourceUrl"] = state_page_url
+            if property_record["sourceLabel"] == f"Army Benefits state guide: {state_name}":
+                property_record["sourceLabel"] = f"Army Benefits state guide: {state_name}"
+                property_record["sourceUrl"] = state_page_url
+
+        property_record.update(PROPERTY_RECORD_OVERRIDES.get(state["slug"], {}))
 
         records.extend([retirement_record, property_record])
         time.sleep(0.2)
