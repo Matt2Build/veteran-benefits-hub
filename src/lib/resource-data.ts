@@ -222,64 +222,86 @@ const nationalResourceProviders: ResourceProvider[] = [
   },
 ];
 
-function buildStateBenefitsDirectoryProvider(stateSlug: string) {
+const stateVeteransAgencyUrls: Record<string, string> = {
+  alabama: "https://va.alabama.gov/",
+  alaska: "https://veterans.alaska.gov/",
+  arizona: "https://dvs.az.gov/",
+  arkansas: "https://www.veterans.arkansas.gov/",
+  california: "https://www.calvet.ca.gov/",
+  colorado: "https://www.colorado.gov/",
+  connecticut: "https://portal.ct.gov/",
+  delaware: "https://veteransaffairs.delaware.gov/",
+  florida: "https://www.floridavets.org/",
+  georgia: "https://veterans.georgia.gov/",
+  hawaii: "https://dod.hawaii.gov/",
+  idaho: "https://www.veterans.idaho.gov/",
+  illinois: "https://veterans.illinois.gov/",
+  indiana: "https://www.in.gov/",
+  iowa: "https://va.iowa.gov/",
+  kansas: "https://kcva.ks.gov/",
+  kentucky: "https://veterans.ky.gov/",
+  louisiana: "https://www.vetaffairs.la.gov/",
+  maine: "https://www.maine.gov/",
+  maryland: "https://veterans.maryland.gov/",
+  massachusetts: "https://www.mass.gov/",
+  michigan: "https://www.michigan.gov/",
+  minnesota: "https://mn.gov/",
+  mississippi: "https://www.msva.ms.gov/",
+  missouri: "https://mvc.dps.mo.gov/",
+  montana: "https://dma.mt.gov/",
+  nebraska: "https://veterans.nebraska.gov/",
+  nevada: "https://veterans.nv.gov/",
+  "new-hampshire": "https://www.dmavs.nh.gov/",
+  "new-jersey": "https://www.nj.gov/",
+  "new-mexico": "https://www.nmdvs.org/",
+  "new-york": "https://veterans.ny.gov/",
+  "north-carolina": "https://www.milvets.nc.gov/",
+  "north-dakota": "https://www.nd.gov/",
+  ohio: "https://dvs.ohio.gov/",
+  oklahoma: "https://oklahoma.gov/",
+  oregon: "https://www.oregon.gov/",
+  pennsylvania: "https://www.dmva.pa.gov/",
+  "rhode-island": "https://www.vets.ri.gov/",
+  "south-carolina": "https://scdva.sc.gov/",
+  "south-dakota": "https://vetaffairs.sd.gov/",
+  tennessee: "https://www.tn.gov/",
+  texas: "https://www.tvc.texas.gov/",
+  utah: "https://veterans.utah.gov/",
+  vermont: "https://veterans.vermont.gov/",
+  virginia: "https://www.dvs.virginia.gov/",
+  washington: "https://www.dva.wa.gov/",
+  "west-virginia": "https://veterans.wv.gov/",
+  wisconsin: "https://dva.wi.gov/",
+  wyoming: "https://www.wyomilitary.wyo.gov/",
+};
+
+function buildStateVeteransAgencyProvider(stateSlug: string) {
   const state = getStateBySlug(stateSlug);
-  if (!state) {
+  const href = stateVeteransAgencyUrls[stateSlug];
+  if (!state || !href) {
     return null;
   }
 
-  const statePath = state.name.replaceAll(" ", "-");
-
   return {
-    id: `${state.slug}-benefits-directory`,
-    name: `${state.name} military and veterans benefits`,
+    id: `${state.slug}-state-veterans-agency`,
+    name: `${state.name} state veterans agency`,
     description:
-      `Official ${state.name} benefits directory covering statewide tax, education, employment, housing, and service-member support programs.`,
-    href: `https://myarmybenefits.us.army.mil/Benefit-Library/State/Territory-Benefits/${statePath}`,
-    ctaLabel: `Open ${state.name} benefits directory`,
+      `Official ${state.name} veterans agency website with state benefit information, service offices, local contacts, and in-state support programs where available.`,
+    href,
+    ctaLabel: `Open ${state.name} veterans agency`,
     audience: `Veterans and families in ${state.name}`,
-    typeLabel: "Official state benefits directory",
+    typeLabel: "Official state veterans agency",
     highlights: [
-      "State-specific benefit programs",
-      "Official links grouped by category",
-      "A fast way to confirm what exists in-state",
+      "State programs and support pages",
+      "County or local service-office information where available",
+      "A direct official state entry point before moving into federal VA systems",
     ],
   } satisfies ResourceProvider;
 }
 
-function buildStateResourceLocatorProvider(stateSlug: string) {
-  const state = getStateBySlug(stateSlug);
-  if (!state) {
-    return null;
-  }
-
-  const statePath = state.name.replaceAll(" ", "-");
-
-  return {
-    id: `${state.slug}-resource-locator`,
-    name: `${state.name} military resource locator`,
-    description:
-      `Official ${state.name} resource locator that points Veterans and families toward local offices, support programs, and nearby assistance channels.`,
-    href: `https://myarmybenefits.us.army.mil/Benefit-Library/Resource-Locator/${statePath}`,
-    ctaLabel: `Open ${state.name} resource locator`,
-    audience: `Anyone trying to find in-state help in ${state.name}`,
-    typeLabel: "Official in-state resource finder",
-    highlights: [
-      "Local offices and support contacts",
-      "In-state program and agency links",
-      "Useful when the next step needs to be local, not generic",
-    ],
-  } satisfies ResourceProvider;
-}
-
-const stateResourceProviders = states.flatMap((state) => {
-  const benefitsDirectory = buildStateBenefitsDirectoryProvider(state.slug);
-  const resourceLocator = buildStateResourceLocatorProvider(state.slug);
-
-  return [benefitsDirectory, resourceLocator].filter(
-    (provider): provider is ResourceProvider => Boolean(provider),
-  );
-});
+const stateResourceProviders = states
+  .map((state) => buildStateVeteransAgencyProvider(state.slug))
+  .filter((provider): provider is ResourceProvider => Boolean(provider));
 
 export const resourceProviders: ResourceProvider[] = [
   ...nationalResourceProviders,
@@ -496,50 +518,43 @@ const providerMap = new Map(
 
 const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> = {
   "disability-claims": (stateSlug) => [
-    `${stateSlug}-resource-locator`,
-    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-state-veterans-agency`,
     "va-disability",
     "va-vso",
   ],
   "health-care": (stateSlug) => [
-    `${stateSlug}-resource-locator`,
-    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-state-veterans-agency`,
     "va-health-care",
     "va-locations",
   ],
   "education-training": (stateSlug) => [
-    `${stateSlug}-benefits-directory`,
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "va-education",
     "va-vre",
   ],
   "housing-homelessness": (stateSlug) => [
-    `${stateSlug}-resource-locator`,
-    `${stateSlug}-benefits-directory`,
+    `${stateSlug}-state-veterans-agency`,
     "va-housing",
     "va-locations",
   ],
   "jobs-and-employment": (stateSlug) => [
-    `${stateSlug}-benefits-directory`,
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "va-vre",
     "va-education",
   ],
   "mental-health-and-crisis": (stateSlug) => [
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "vcl",
     "va-health-care",
     "va-locations",
   ],
   "family-caregiver-and-spouse": (stateSlug) => [
-    `${stateSlug}-benefits-directory`,
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "va-caregiver",
     "women-vets",
   ],
   "pension-survivors-and-later-life": (stateSlug) => [
-    `${stateSlug}-benefits-directory`,
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "va-pension",
     "va-burial",
   ],
@@ -579,10 +594,15 @@ export function getCoreResourceProviders() {
 
 export function getStateOfficialProviders(stateSlug: string) {
   return getProvidersByIds([
-    `${stateSlug}-benefits-directory`,
-    `${stateSlug}-resource-locator`,
+    `${stateSlug}-state-veterans-agency`,
     "va-locations",
   ]);
+}
+
+export function getAllStateAgencyProviders() {
+  return states
+    .map((state) => providerMap.get(`${state.slug}-state-veterans-agency`))
+    .filter((provider): provider is ResourceProvider => Boolean(provider));
 }
 
 export function getFeaturedResourceTopics() {
@@ -613,7 +633,7 @@ export function getStateResourceEntries(stateSlug: string): StateResourceEntry[]
       topicSlug: topic.slug,
       title: `${topic.title} in ${state.name}`,
       summary:
-        `${topic.summary} Start with ${state.name}'s official benefits directory and resource locator, then move into the federal provider path that matches the need.${compareSuffix}`,
+        `${topic.summary} Start with ${state.name}'s official veterans agency site, then move into the federal provider path that matches the need.${compareSuffix}`,
       quickChecks: topic.quickChecks.slice(0, 3),
       providerIds,
       compareCategorySlugs,
