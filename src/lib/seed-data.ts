@@ -81,7 +81,7 @@ export const categories: BenefitCategoryDefinition[] = [
     shortLabel: "Retirement pay",
     compareTitle: "Military retirement pay by state",
     compareDescription:
-      "Compare how each state handles military retirement pay, with published facts prioritized and unpublished states marked as coming soon.",
+      "Compare how each state handles military retirement pay, with a direct answer, source link, and verification date for every live row.",
   },
   {
     slug: "property-tax-exemption",

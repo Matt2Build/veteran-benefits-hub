@@ -35,6 +35,10 @@ export function ComparisonExplorer({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortField, setSortField] = useState<SortField>("state");
   const deferredQuery = useDeferredValue(query);
+  const hasUnpublishedRows = useMemo(
+    () => rows.some((row) => !row.published),
+    [rows],
+  );
 
   const filteredRows = useMemo(() => {
     const normalizedQuery = deferredQuery.trim().toLowerCase();
@@ -53,7 +57,7 @@ export function ComparisonExplorer({
         }
 
         if (!row.published) {
-          return statusFilter === "coming-soon";
+          return hasUnpublishedRows && statusFilter === "coming-soon";
         }
 
         return row.status === statusFilter;
@@ -77,7 +81,7 @@ export function ComparisonExplorer({
           : 0;
         return rightDate - leftDate;
       });
-  }, [deferredQuery, rows, sortField, statusFilter]);
+  }, [deferredQuery, hasUnpublishedRows, rows, sortField, statusFilter]);
 
   return (
     <section className="space-y-6">
@@ -106,7 +110,9 @@ export function ComparisonExplorer({
             <option value="partial">Partial</option>
             <option value="conditional">Conditional</option>
             <option value="none">None</option>
-            <option value="coming-soon">Coming soon</option>
+            {hasUnpublishedRows ? (
+              <option value="coming-soon">Not yet published</option>
+            ) : null}
           </select>
         </label>
         <label>
@@ -159,7 +165,7 @@ export function ComparisonExplorer({
                     <StatusBadge status={row.status} />
                   ) : (
                     <span className="inline-flex rounded-full bg-[color:var(--background)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)] ring-1 ring-[color:var(--line)] ring-inset">
-                      Coming soon
+                      Not yet published
                     </span>
                   )}
                 </td>
@@ -186,7 +192,7 @@ export function ComparisonExplorer({
                     </div>
                   ) : (
                     <span className="text-sm text-[color:var(--muted)]">
-                      Not published
+                      Not yet published
                     </span>
                   )}
                 </td>
@@ -218,7 +224,7 @@ export function ComparisonExplorer({
                 <StatusBadge status={row.status} />
               ) : (
                 <span className="inline-flex rounded-full bg-[color:var(--background)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)] ring-1 ring-[color:var(--line)] ring-inset">
-                  Coming soon
+                  Not yet published
                 </span>
               )}
             </div>
@@ -248,7 +254,9 @@ export function ComparisonExplorer({
       </div>
 
       <p className="text-sm text-[color:var(--muted)]">
-        Published rows include a live source and verification date. Unpublished states stay visible so the 50-state footprint is clear while editorial review continues.
+        {hasUnpublishedRows
+          ? "Published rows include a live source and verification date. If a row is not yet published, the state still stays visible so the 50-state footprint remains intact."
+          : "Every state shown here includes a live answer, source link, and verification date for this tracked category."}
       </p>
     </section>
   );

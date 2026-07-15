@@ -66,6 +66,7 @@ export default async function StatePage({
   const stateResourceEntries = getStateResourceEntries(state.slug);
   const publishedBenefitCount = allBenefits.filter((benefit) => benefit.published).length;
   const unpublishedBenefitCount = allBenefits.length - publishedBenefitCount;
+  const hasCoverageGaps = unpublishedBenefitCount > 0;
   const providerCount = new Set(stateResourceEntries.flatMap((entry) => entry.providerIds)).size;
   const quickJumpLinks = [
     { id: "help-now", label: "Get help now" },
@@ -140,12 +141,14 @@ export default async function StatePage({
             </div>
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
-                In research
+                Tracked categories
               </p>
               <p className="mt-2 text-2xl font-semibold text-[color:var(--foreground)]">
-                {unpublishedBenefitCount}
+                {allBenefits.length}
               </p>
-              <p className="mt-1 text-sm text-[color:var(--muted)]">Still being verified</p>
+              <p className="mt-1 text-sm text-[color:var(--muted)]">
+                {hasCoverageGaps ? `${unpublishedBenefitCount} still in verification` : "All rows published"}
+              </p>
             </div>
             <div className="rounded-[1.35rem] border border-[color:var(--line)] bg-white/82 px-4 py-4 shadow-[0_16px_40px_rgba(16,33,50,0.06)]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--muted)]">
@@ -209,7 +212,9 @@ export default async function StatePage({
                 What is live
               </p>
               <p className="mt-2 text-sm leading-6 text-[color:var(--muted)]">
-                {publishedBenefitCount} published state facts are live now, and {unpublishedBenefitCount} tracked rows are still in source review.
+                {hasCoverageGaps
+                  ? `${publishedBenefitCount} published state facts are live now, and ${unpublishedBenefitCount} tracked rows are still in source review.`
+                  : `${publishedBenefitCount} published state facts are live now, with source links and verification dates attached to each one.`}
               </p>
             </div>
             <div className="flex flex-wrap gap-3 pt-1">
@@ -373,7 +378,7 @@ export default async function StatePage({
           </div>
         ) : (
           <section className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8 text-base leading-8 text-[color:var(--muted)]">
-            This state section does not currently have a published benefit record in this category. Use the official resource map and provider links above while the policy row remains in editorial review.
+            This category does not yet have a published record for {state.name}. Use the official resource map and provider links above until a source-backed answer is added.
           </section>
         )}
       </section>
@@ -387,7 +392,7 @@ export default async function StatePage({
             Everything currently tracked in {state.name}
           </h2>
           <p className="max-w-3xl text-base leading-7 text-[color:var(--muted)]">
-            Published and in-research rows stay visible here so users can see the full state footprint without hunting through multiple pages.
+            This is the tracked state-benefit set currently published on the site, shown together so users can compare the full state footprint without hunting through multiple pages.
           </p>
         </div>
         <section className="overflow-hidden rounded-[2rem] border border-[color:var(--line)] bg-[color:var(--surface)] shadow-[0_18px_48px_rgba(16,33,50,0.06)]">
@@ -407,7 +412,7 @@ export default async function StatePage({
                   <p className="text-sm leading-6 text-[color:var(--muted)]">
                     {benefit.published
                       ? benefit.summary
-                      : "Still in research. The state page keeps the topic visible so coverage gaps are clear while source verification is underway."}
+                      : "Source-backed answer not yet published for this tracked category."}
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 md:items-end">
@@ -415,7 +420,7 @@ export default async function StatePage({
                     <StatusBadge status={benefit.status} />
                   ) : (
                     <span className="inline-flex rounded-full bg-[color:var(--background)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)] ring-1 ring-[color:var(--line)] ring-inset">
-                      In research
+                      Not yet published
                     </span>
                   )}
                   <p className="text-sm font-medium text-[color:var(--muted)]">

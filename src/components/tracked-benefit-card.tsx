@@ -53,7 +53,7 @@ export function TrackedBenefitCard({ benefit }: { benefit: BenefitRecord }) {
       <p className="mt-5 text-sm font-medium text-[color:var(--muted)]">
         {benefit.published && benefit.verifiedDate
           ? `Verified ${formatDate(benefit.verifiedDate)}`
-          : "Queued for source verification and editorial review"}
+          : "Source-backed answer not yet published"}
       </p>
     </article>
   );

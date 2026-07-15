@@ -99,7 +99,7 @@ export async function getComparisonRows(
         stateName: state.name,
         category,
         published: false,
-        summary: "Benefits profile in review.",
+        summary: "Source-backed answer not yet published.",
       };
     }
 
