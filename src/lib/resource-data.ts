@@ -605,6 +605,10 @@ export function getAllStateAgencyProviders() {
     .filter((provider): provider is ResourceProvider => Boolean(provider));
 }
 
+export function getStateAgencyProvider(stateSlug: string) {
+  return providerMap.get(`${stateSlug}-state-veterans-agency`);
+}
+
 export function getFeaturedResourceTopics() {
   return resourceTopics.slice(0, 4);
 }
