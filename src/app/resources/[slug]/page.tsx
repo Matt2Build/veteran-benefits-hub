@@ -4,12 +4,16 @@ import { ArrowRight, ExternalLink, MapPinned } from "lucide-react";
 import { notFound } from "next/navigation";
 import { ProviderCard } from "@/components/provider-card";
 import { ResourceTopicCard } from "@/components/resource-topic-card";
+import { formatDate } from "@/lib/format";
+import { seedBenefitRecords, states } from "@/lib/seed-data";
 import {
   getFeaturedStatesForResources,
   getAllResourceTopicSlugs,
+  getProvidersByIds,
   getProvidersForTopic,
   getResourceTopicBySlug,
   getStateAgencyProvider,
+  getStateResourceEntry,
   resourceTopics,
 } from "@/lib/resource-data";
 
@@ -63,6 +67,32 @@ export default async function ResourceGuidePage({
         provider: NonNullable<ReturnType<typeof getStateAgencyProvider>>;
       } => Boolean(item.provider),
     );
+  const housingRows =
+    topic.slug === "housing-homelessness"
+      ? seedBenefitRecords
+          .filter(
+            (record) =>
+              record.category === "property-tax-exemption" &&
+              record.published &&
+              record.sourceLabel &&
+              record.sourceUrl,
+          )
+          .map((record) => {
+            const state = states.find((entry) => entry.slug === record.stateSlug);
+            return {
+              record,
+              state,
+            };
+          })
+          .filter(
+            (
+              item,
+            ): item is {
+              record: (typeof seedBenefitRecords)[number];
+              state: (typeof featuredStates)[number];
+            } => Boolean(item.state),
+          )
+      : [];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-14 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -228,6 +258,88 @@ export default async function ResourceGuidePage({
           </div>
         </div>
       </section>
+
+      {topic.slug === "housing-homelessness" ? (
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Housing relief by state
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              Official state property tax relief sources
+            </h2>
+            <p className="max-w-3xl text-base leading-8 text-[color:var(--muted)]">
+              Housing support is not only home loans and homelessness prevention. For many Veterans, the fastest state-level housing relief is property tax relief tied to disability status, and every row below points to an official state source already tracked on the site.
+            </p>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {housingRows.map(({ state, record }) => {
+              const housingEntry = getStateResourceEntry(state.slug, topic.slug);
+              return (
+                <article
+                  key={record.id}
+                  className="rounded-[1.75rem] border border-[color:var(--line)] bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(251,248,239,0.96))] p-5 shadow-[0_18px_48px_rgba(16,33,50,0.08)]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[color:var(--muted)]">
+                        {state.code}
+                      </p>
+                      <h3 className="mt-2 text-xl font-semibold tracking-tight text-[color:var(--foreground)]">
+                        {state.name}
+                      </h3>
+                    </div>
+                    <Link
+                      href={`/states/${state.slug}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-white/82 px-3 py-2 text-sm font-semibold text-[color:var(--navy)]"
+                    >
+                      State page
+                    </Link>
+                  </div>
+                  <p className="mt-4 text-base leading-7 text-[color:var(--muted)]">
+                    {record.summary}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {getProvidersByIds(housingEntry?.providerIds.slice(0, 3) ?? []).map(
+                      (provider) => (
+                        <span
+                          key={provider.id}
+                          className="rounded-full border border-[color:var(--line)] bg-white/82 px-3 py-1 text-xs font-medium text-[color:var(--muted)]"
+                        >
+                          {provider.name}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                  <div className="mt-5 flex flex-wrap items-center gap-4 text-sm">
+                    <a
+                      href={record.sourceUrl ?? undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 font-semibold text-[color:var(--navy)] underline underline-offset-4"
+                    >
+                      {record.sourceLabel}
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
+                    {record.verifiedDate ? (
+                      <span className="text-[color:var(--muted)]">
+                        Verified {formatDate(record.verifiedDate)}
+                      </span>
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+          <Link
+            href="/compare/property-tax-exemption"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[color:var(--navy)]"
+          >
+            Compare all 50 property tax relief rows
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </section>
+      ) : null}
 
       <section className="space-y-6">
         <div className="space-y-2">

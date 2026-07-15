@@ -1,4 +1,4 @@
-import { categories, getStateBySlug, states } from "@/lib/seed-data";
+import { categories, getStateBySlug, seedBenefitRecords, states } from "@/lib/seed-data";
 import { BenefitCategorySlug } from "@/lib/types";
 
 export interface ResourceProvider {
@@ -303,9 +303,48 @@ const stateResourceProviders = states
   .map((state) => buildStateVeteransAgencyProvider(state.slug))
   .filter((provider): provider is ResourceProvider => Boolean(provider));
 
+function buildStatePropertyTaxHousingProvider(stateSlug: string) {
+  const state = getStateBySlug(stateSlug);
+  const benefit = seedBenefitRecords.find(
+    (record) =>
+      record.stateSlug === stateSlug &&
+      record.category === "property-tax-exemption" &&
+      record.published &&
+      record.sourceLabel &&
+      record.sourceUrl &&
+      record.featuredInComparison,
+  );
+
+  if (!state || !benefit?.sourceLabel || !benefit.sourceUrl) {
+    return null;
+  }
+
+  return {
+    id: `${state.slug}-property-tax-relief-source`,
+    name: `${state.name} property tax relief for disabled veterans`,
+    description: benefit.summary,
+    href: benefit.sourceUrl,
+    ctaLabel: `Open ${state.name} property tax relief source`,
+    audience: `Veteran homeowners and families in ${state.name}`,
+    typeLabel: "Official state housing-related tax relief",
+    highlights: [
+      benefit.disabilityThreshold
+        ? `Eligibility threshold: ${benefit.disabilityThreshold}`
+        : "Review the current eligibility rules on the official source.",
+      `Verified ${benefit.verifiedDate ?? "recently"}`,
+      benefit.sourceLabel,
+    ],
+  } satisfies ResourceProvider;
+}
+
+const stateHousingProviders = states
+  .map((state) => buildStatePropertyTaxHousingProvider(state.slug))
+  .filter((provider): provider is ResourceProvider => Boolean(provider));
+
 export const resourceProviders: ResourceProvider[] = [
   ...nationalResourceProviders,
   ...stateResourceProviders,
+  ...stateHousingProviders,
 ];
 
 export const resourceTopics: ResourceTopic[] = [
@@ -534,6 +573,7 @@ const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> =
   ],
   "housing-homelessness": (stateSlug) => [
     `${stateSlug}-state-veterans-agency`,
+    `${stateSlug}-property-tax-relief-source`,
     "va-housing",
     "va-locations",
   ],
@@ -611,6 +651,10 @@ export function getStateAgencyProvider(stateSlug: string) {
 
 export function getFeaturedResourceTopics() {
   return resourceTopics.slice(0, 4);
+}
+
+export function getStateResourceEntry(stateSlug: string, topicSlug: string) {
+  return getStateResourceEntries(stateSlug).find((entry) => entry.topicSlug === topicSlug);
 }
 
 export function getStateResourceEntries(stateSlug: string): StateResourceEntry[] {
