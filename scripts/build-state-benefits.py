@@ -345,6 +345,58 @@ def build_detail(text: str) -> str:
     return text[:1800].strip()
 
 
+def keyword_score(text: str, keywords: list[str]) -> int:
+    normalized = text.lower()
+    return sum(1 for keyword in keywords if keyword in normalized)
+
+
+def pick_official_link(
+    section: str,
+    keywords: list[str],
+    fallback_label: str,
+    fallback_url: str,
+) -> tuple[str, str]:
+    links = []
+    for label, url in find_links(section):
+        normalized_label = normalize_sentence(label)
+        normalized_url = url.lower()
+        if not normalized_label:
+            continue
+        if "myarmybenefits.us.army.mil/images" in normalized_url:
+            continue
+        score = keyword_score(normalized_label, keywords) * 4
+        score += keyword_score(normalized_url, keywords) * 3
+        if any(
+            domain in normalized_url
+            for domain in [
+                ".gov/",
+                ".gov?",
+                ".state.",
+                ".us/",
+                ".mil/",
+                ".edu/",
+            ]
+        ):
+            score += 3
+        if "law.justia.com" in normalized_url:
+            score += 1
+        if "irs.gov" in normalized_url and "disability" in normalized_label.lower():
+            score -= 2
+        if "va.gov" in normalized_url and "military retired pay" not in normalized_label.lower():
+            score -= 2
+        if "learn more" in normalized_label.lower():
+            score += 1
+        if score > 0:
+            links.append((score, normalized_label, url))
+
+    if not links:
+        return fallback_label, fallback_url
+
+    links.sort(key=lambda item: (item[0], len(item[1])), reverse=True)
+    _, label, url = links[0]
+    return label, url
+
+
 def pick_source(block: str, fallback_label: str, fallback_url: str) -> tuple[str, str]:
     links = [
         (normalize_sentence(label), url)
@@ -381,14 +433,30 @@ def build_records() -> list[dict[str, Any]]:
             property_text,
             f"{state_name} disabled veteran property tax rules are published in the official state benefits guide.",
         )
-        retirement_source_label, retirement_source_url = pick_source(
-            retirement_text,
-            f"Official Army Benefits: {state_name}",
+        retirement_source_label, retirement_source_url = pick_official_link(
+            section,
+            [
+                "military retired pay",
+                "military retirement pay",
+                "retired pay",
+                "income tax",
+                "income taxes",
+                "tax information for military personnel",
+            ],
+            f"Army Benefits state guide: {state_name}",
             state_page_url,
         )
-        property_source_label, property_source_url = pick_source(
-            property_text,
-            f"Official Army Benefits: {state_name}",
+        property_source_label, property_source_url = pick_official_link(
+            markdown,
+            [
+                "property tax",
+                "homestead",
+                "disabled veteran",
+                "tax exemption",
+                "tax credit",
+                "county assessor",
+            ],
+            f"Army Benefits state guide: {state_name}",
             state_page_url,
         )
 
@@ -423,7 +491,7 @@ def build_records() -> list[dict[str, Any]]:
             retirement_record["detailMd"] = (
                 f"The official {state_name} state benefits source should be used to confirm how military retirement pay is treated for state tax purposes."
             )
-            retirement_record["sourceLabel"] = f"Official Army Benefits: {state_name}"
+            retirement_record["sourceLabel"] = f"Army Benefits state guide: {state_name}"
             retirement_record["sourceUrl"] = state_page_url
 
         property_record = {
@@ -450,7 +518,7 @@ def build_records() -> list[dict[str, Any]]:
             property_record["detailMd"] = (
                 f"The official {state_name} state benefits source should be used to confirm current disabled veteran property tax relief, thresholds, and local filing requirements."
             )
-            property_record["sourceLabel"] = f"Official Army Benefits: {state_name}"
+            property_record["sourceLabel"] = f"Army Benefits state guide: {state_name}"
             property_record["sourceUrl"] = state_page_url
 
         records.extend([retirement_record, property_record])
