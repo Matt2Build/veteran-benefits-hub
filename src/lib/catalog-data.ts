@@ -40,7 +40,13 @@ export const providerDirectoryGroups: ProviderDirectoryGroup[] = [
     title: "Housing and family support",
     description:
       "Programs that support home stability, caregiving, and the family systems around the Veteran.",
-    providerIds: ["va-housing", "va-caregiver", "women-vets"],
+    providerIds: [
+      "va-home-loans",
+      "va-adapted-housing",
+      "va-homeless-call",
+      "va-caregiver",
+      "women-vets",
+    ],
   },
   {
     id: "later-life-and-navigation",

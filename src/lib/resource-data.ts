@@ -115,6 +115,51 @@ const nationalResourceProviders: ResourceProvider[] = [
     ],
   },
   {
+    id: "va-home-loans",
+    name: "VA-backed home loans",
+    description:
+      "The direct VA home-loan path for buying, building, improving, or refinancing a home.",
+    href: "https://www.va.gov/housing-assistance/home-loans/",
+    ctaLabel: "Open VA home loans",
+    audience: "Veterans, service members, and survivors using a home loan benefit",
+    typeLabel: "Official VA home loan program",
+    highlights: [
+      "Buy, build, improve, or refinance a home",
+      "VA-backed loan options and eligibility basics",
+      "A better first stop than generic mortgage articles",
+    ],
+  },
+  {
+    id: "va-adapted-housing",
+    name: "Disability housing grants",
+    description:
+      "The direct VA housing-grants path for adapting, building, or changing a home to meet disability-related needs.",
+    href: "https://www.va.gov/housing-assistance/disability-housing-grants/",
+    ctaLabel: "Open disability housing grants",
+    audience: "Veterans and service members with certain service-connected disabilities",
+    typeLabel: "Official VA adapted housing grants",
+    highlights: [
+      "Specially Adapted Housing and related grants",
+      "Use grants to buy or modify a home for accessibility",
+      "Official eligibility and application path",
+    ],
+  },
+  {
+    id: "va-homeless-call",
+    name: "National Call Center for Homeless Veterans",
+    description:
+      "The direct 24/7 VA hotline for Veterans who are homeless or at risk of homelessness.",
+    href: "https://www.va.gov/homeless/nationalcallcenter.asp",
+    ctaLabel: "Open homeless Veteran support",
+    audience: "Veterans who need urgent housing stabilization or homelessness help",
+    typeLabel: "Official VA homelessness support line",
+    highlights: [
+      "24/7 phone access at 877-424-3838",
+      "Confidential help for homeless and at-risk Veterans",
+      "Connects callers to nearby VA housing support",
+    ],
+  },
+  {
     id: "va-caregiver",
     name: "VA caregiver support",
     description:
@@ -432,16 +477,21 @@ export const resourceTopics: ResourceTopic[] = [
     summary:
       "Find the right starting point for VA-backed home loans, disability housing grants, or homelessness prevention.",
     icon: "home",
-    providerIds: ["va-housing", "va-locations", "vcl"],
+    providerIds: [
+      "va-home-loans",
+      "va-adapted-housing",
+      "va-homeless-call",
+      "va-housing",
+    ],
     bullets: [
-      "Explore VA-backed home loans and housing grants.",
-      "Get help fast if you’re homeless or at risk.",
-      "Find the office or program closest to you.",
+      "Use the direct VA home-loan path when the need is buying or refinancing.",
+      "Use disability housing grants when accessibility or adaptation is the issue.",
+      "Use the homeless Veteran hotline immediately when housing is unstable.",
     ],
     quickChecks: [
       "Are you trying to buy, stay housed, or get urgent support?",
       "Does disability affect what housing benefits fit?",
-      "Do you need a nearby office instead of another article?",
+      "Do you need a grant, a loan path, or immediate housing stabilization?",
     ],
     heroLabel: "Home buying, stability, and urgent housing support",
     heroSummary:
@@ -574,8 +624,9 @@ const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> =
   "housing-homelessness": (stateSlug) => [
     `${stateSlug}-state-veterans-agency`,
     `${stateSlug}-property-tax-relief-source`,
-    "va-housing",
-    "va-locations",
+    "va-home-loans",
+    "va-adapted-housing",
+    "va-homeless-call",
   ],
   "jobs-and-employment": (stateSlug) => [
     `${stateSlug}-state-veterans-agency`,
