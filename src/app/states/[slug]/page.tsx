@@ -327,7 +327,7 @@ export default async function StatePage({
         ))
       ) : (
         <section className="rounded-[2rem] border border-dashed border-[color:var(--line)] bg-[color:var(--surface)] p-8 text-base leading-8 text-[color:var(--muted)]">
-          No published state-specific benefits yet. This page still stays useful by surfacing the federal help paths, provider guides, and comparison structure while the state policy detail is being built out.
+          This state section does not currently have a published benefit record in this category. Use the official resource map and provider links above while the policy row remains in editorial review.
         </section>
       )}
 

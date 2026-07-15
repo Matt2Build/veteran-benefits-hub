@@ -41,7 +41,7 @@ export default function AboutPage() {
               Founder story
             </h2>
             <p className="mt-4 text-base leading-8 text-[color:var(--muted)]">
-              Placeholder for the founder story. The site is positioned as veteran-built, grounded in hands-on experience, and focused on practical clarity over directory sprawl.
+              Built from first-hand experience navigating the benefits system, the site is designed to stay practical: answer the next real question, show the official source, and keep the path forward obvious for veterans and their families.
             </p>
           </article>
         </section>
@@ -83,7 +83,7 @@ export default function AboutPage() {
           <ul className="mt-5 space-y-4 text-base leading-8 text-[color:var(--muted)]">
             <li>Every published fact links to an official source.</li>
             <li>Every published fact shows when it was last verified.</li>
-            <li>Unverified or in-progress state records remain unpublished and are visibly marked as coming soon.</li>
+            <li>Records that are still under review remain unpublished until the answer, source, and verification date are complete.</li>
             <li>The admin review queue is designed to surface records that are more than six months old or never verified.</li>
           </ul>
         </section>

@@ -99,6 +99,12 @@ def strip_html(text: str) -> str:
 def clean_markdown(text: str) -> str:
     text = text.replace("\r", "")
     text = re.sub(r"!\[[^\]]*\]\([^)]+\)", "", text)
+    text = re.sub(r"^\s*\[[^\]]+\]\([^)]+\)\s*", "", text)
+    text = re.sub(r"^\s*\]\([^)]+\)\s*", "", text)
+    text = re.sub(r"\)(?=\[)", ")\n", text)
+    text = re.sub(r"([^\s\[]+)\]\((https?://[^)]+)\)", r"\1", text)
+    text = re.sub(r"\]\((https?://[^)]+)\)", "", text)
+    text = re.sub(r"\n\[\s*$", "", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -111,8 +117,7 @@ def extract_tax_section(markdown: str, state_name: str) -> str:
     heading_match = heading_pattern.search(markdown)
     if not heading_match:
         raise RuntimeError(f"Could not find tax section for {state_name}")
-    start = markdown.rfind("\n**", 0, heading_match.start())
-    start = 0 if start == -1 else start + 1
+    start = heading_match.start()
     tail = markdown[start:]
     next_heading = re.search(
         r"What are my .*? Military and Veteran[s]?.*? Benefits\?",
@@ -308,36 +313,34 @@ def extract_retirement_block(section: str, state_name: str) -> tuple[str, str]:
     )
 
 
-def extract_property_block(section: str, state_name: str) -> tuple[str, str]:
-    phrases = [
-        "Homestead Tax Exemption",
-        "Property Tax Exemption for Disabled Veterans",
-        "Property Tax Exemption for Disabled Veterans and their Survivors",
-        "Real Property Tax Exemption for 100% Disabled Veterans",
-        "Disabled Veteran Property Tax",
-        "Disabled Veterans School Tax Credit",
-        "Homestead and Personal Property Tax Exemption",
-        "Property Tax Relief",
-        "Property Tax Exemption",
-        "School Tax Credit",
-    ]
-    return extract_phrase_block(section, phrases) or choose_best_block(
-        section,
-        property_score,
-        state_name,
-        "property",
-    )
+def extract_property_block(markdown: str, section: str, state_name: str) -> tuple[str, str]:
+    return choose_best_block(markdown, property_score, state_name, "property")
 
 
 def build_summary(text: str, fallback: str) -> str:
-    sentence = normalize_sentence(text.split(".")[0] + ".")
+    text = clean_markdown(text)
+    first_sentence = re.split(r"(?<=[.?!])\s+", text, maxsplit=1)[0]
+    sentence = normalize_sentence(first_sentence).lstrip("]:- ")
+    if sentence.lower().startswith("summary of "):
+        return fallback
+    if sentence and not sentence.endswith((".", "!", "?")):
+        sentence += "."
     return sentence if sentence else fallback
 
 
 def build_detail(text: str) -> str:
     text = clean_markdown(text)
+    text = strip_links(text)
     text = re.sub(r"\*\*", "", text)
     text = re.sub(r"_([^_]+)_", r"\1", text)
+    text = re.sub(r"(?m)^\[[^\n]*\n?", "", text)
+    text = re.sub(r"\[\s*$", "", text)
+    text = re.sub(r"([a-z0-9.])([A-Z])", r"\1 \2", text)
+    text = re.split(
+        r"\n\s*[A-Z][A-Za-z .]*State Taxes on U\. ?S\. Department of Veterans Affairs Disability Dependency and Indemnity Compensation",
+        text,
+        maxsplit=1,
+    )[0]
     text = re.sub(r"\n{2,}", "\n\n", text)
     return text[:1800].strip()
 
@@ -368,7 +371,7 @@ def build_records() -> list[dict[str, Any]]:
         section = extract_tax_section(markdown, state_name)
 
         retirement_text, _ = extract_retirement_block(section, state_name)
-        property_text, _ = extract_property_block(section, state_name)
+        property_text, _ = extract_property_block(markdown, section, state_name)
 
         retirement_summary = build_summary(
             retirement_text,
@@ -406,6 +409,23 @@ def build_records() -> list[dict[str, Any]]:
             "featuredInComparison": True,
         }
 
+        if (
+            not retirement_record["detailMd"]
+            or str(retirement_record["summary"]).startswith("[")
+            or (
+                "spouse" in str(retirement_record["summary"]).lower()
+                and "retired" not in str(retirement_record["summary"]).lower()
+            )
+        ):
+            retirement_record["summary"] = (
+                f"{state_name} military retirement tax treatment is published in the official state benefits guide."
+            )
+            retirement_record["detailMd"] = (
+                f"The official {state_name} state benefits source should be used to confirm how military retirement pay is treated for state tax purposes."
+            )
+            retirement_record["sourceLabel"] = f"Official Army Benefits: {state_name}"
+            retirement_record["sourceUrl"] = state_page_url
+
         property_record = {
             "id": f"{state['slug']}-property-tax-exemption",
             "stateSlug": state["slug"],
@@ -422,6 +442,16 @@ def build_records() -> list[dict[str, Any]]:
             "published": True,
             "featuredInComparison": True,
         }
+
+        if not property_record["detailMd"] or str(property_record["summary"]).startswith("["):
+            property_record["summary"] = (
+                f"{state_name} disabled veteran property tax rules are published in the official state benefits guide."
+            )
+            property_record["detailMd"] = (
+                f"The official {state_name} state benefits source should be used to confirm current disabled veteran property tax relief, thresholds, and local filing requirements."
+            )
+            property_record["sourceLabel"] = f"Official Army Benefits: {state_name}"
+            property_record["sourceUrl"] = state_page_url
 
         records.extend([retirement_record, property_record])
         time.sleep(0.2)
