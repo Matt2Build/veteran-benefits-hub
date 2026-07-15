@@ -4,21 +4,13 @@ Updated: 2026-07-14
 
 ## Military retirement pay
 
-- 44 of 50 rows now point to state revenue, tax, or veterans-agency pages.
-- 5 rows still point to statute-level or constitution mirror pages.
-- 1 row still falls back to the Army Benefits state guide because the source page does not expose a clean primary retirement-pay link.
-
-Remaining retirement-source exceptions:
-
-- Florida: `law.justia.com` constitution mirror for no state income tax.
-- Louisiana: Army Benefits state guide fallback.
-- New Mexico: `law.justia.com` statute mirror for military retired pay deduction.
-- Tennessee: `law.justia.com` constitution mirror for no general state income tax.
-- Texas: `tlc.texas.gov` Texas Constitution PDF.
-- Wyoming: `law.justia.com` statute mirror for no state income tax.
+- 50 of 50 rows now point to official state revenue, tax, veterans-agency, or legislative sources.
+- The prior retirement-source exceptions have been replaced with official Florida, Louisiana, New Mexico, Tennessee, Texas, Vermont, and Wyoming sources.
+- No retirement row now falls back to the Army Benefits state guide or a `law.justia.com` mirror.
 
 ## Disabled veteran property tax relief
 
 - The 50-state property-tax dataset is structurally complete and live.
-- Property-tax rows still need the same primary-source review pass category by category.
-- The current live rows are usable, but source quality is not yet normalized to the same level as the improved retirement-pay set.
+- Placeholder and fallback property rows have been removed.
+- The most error-prone or visibly broken rows were replaced with state-specific overrides using official state tax, veterans, finance, or legislative sources.
+- Remaining improvement work is mostly editorial normalization for rows that already point to official sources, not broad source replacement.
