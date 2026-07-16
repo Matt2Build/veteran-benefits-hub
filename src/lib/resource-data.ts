@@ -85,6 +85,66 @@ const nationalResourceProviders: ResourceProvider[] = [
     ],
   },
   {
+    id: "va-gi-bill-compare",
+    name: "GI Bill Comparison Tool",
+    description:
+      "The direct VA tool for comparing GI Bill benefits by school or employer and reviewing approved training options.",
+    href: "https://www.va.gov/education/gi-bill-comparison-tool/schools-and-employers",
+    ctaLabel: "Open GI Bill Comparison Tool",
+    audience: "Veterans, service members, and families comparing schools or training providers",
+    typeLabel: "Official VA school comparison tool",
+    highlights: [
+      "Compare education benefits by school",
+      "Review participating schools and employers",
+      "Use before committing time or money to a program",
+    ],
+  },
+  {
+    id: "va-education-counseling",
+    name: "Educational and career counseling (Chapter 36)",
+    description:
+      "The direct VA counseling path for education planning, career guidance, and making better use of your earned education benefits.",
+    href: "https://www.va.gov/careers-employment/education-and-career-counseling/",
+    ctaLabel: "Open Chapter 36 counseling",
+    audience: "Veterans, service members, and eligible dependents planning education or career moves",
+    typeLabel: "Official VA education counseling program",
+    highlights: [
+      "Free educational and career guidance",
+      "Helps map benefits into a school or job plan",
+      "Useful when the next step is unclear, not just when applying",
+    ],
+  },
+  {
+    id: "va-gibill-contact",
+    name: "GI Bill hotline and support",
+    description:
+      "The official VA contact path for GI Bill questions, application issues, and education-benefit support.",
+    href: "https://www.benefits.va.gov/gibill/contact_us.asp",
+    ctaLabel: "Open GI Bill support",
+    audience: "Veterans, students, dependents, and school staff with education-benefit questions",
+    typeLabel: "Official VA education support",
+    highlights: [
+      "888-GIBILL-1 for GI Bill support",
+      "Ask VA online support path",
+      "Useful for application, payment, and benefit questions",
+    ],
+  },
+  {
+    id: "state-approving-agencies",
+    name: "State Approving Agencies directory",
+    description:
+      "The directory used by VA’s education pages for state approving agencies that oversee school and training program approval for GI Bill eligibility.",
+    href: "https://nasaa-vetseducation.com/nasaa-contacts/",
+    ctaLabel: "Open State Approving Agencies directory",
+    audience: "Veterans, schools, and training providers checking program approval paths",
+    typeLabel: "State approving agency directory",
+    highlights: [
+      "State-by-state education approval contacts",
+      "Use when program approval or school eligibility is the issue",
+      "Linked directly from VA education resources",
+    ],
+  },
+  {
     id: "va-vre",
     name: "Veteran Readiness and Employment",
     description:
@@ -452,16 +512,24 @@ export const resourceTopics: ResourceTopic[] = [
     summary:
       "Use GI Bill and related education benefits to pay for school, certifications, apprenticeships, or job training.",
     icon: "graduation",
-    providerIds: ["va-education", "va-vre"],
+    providerIds: [
+      "va-education",
+      "va-gi-bill-compare",
+      "va-education-counseling",
+      "state-approving-agencies",
+      "va-vre",
+      "va-gibill-contact",
+    ],
     bullets: [
       "Apply for GI Bill and related education benefits.",
-      "Compare education and training paths.",
-      "Use VR&E if disability affects your work or school plan.",
+      "Compare approved schools and training options before enrolling.",
+      "Use counseling or VR&E when the education path needs a job plan behind it.",
     ],
     quickChecks: [
       "Do you need school funding or career-aligned training?",
+      "Do you need to compare approved schools before enrolling?",
       "Would VR&E fit better than a standard GI Bill path?",
-      "Are you trying to translate education into employment quickly?",
+      "Do you need counseling, approval, or direct GI Bill support right now?",
     ],
     heroLabel: "School funding and job-aligned training",
     heroSummary:
@@ -619,6 +687,8 @@ const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> =
   "education-training": (stateSlug) => [
     `${stateSlug}-state-veterans-agency`,
     "va-education",
+    "va-gi-bill-compare",
+    "state-approving-agencies",
     "va-vre",
   ],
   "housing-homelessness": (stateSlug) => [

@@ -93,6 +93,17 @@ export default async function ResourceGuidePage({
             } => Boolean(item.state),
           )
       : [];
+  const educationProviders =
+    topic.slug === "education-training"
+      ? providers.filter((provider) =>
+          [
+            "va-gi-bill-compare",
+            "va-education-counseling",
+            "state-approving-agencies",
+            "va-gibill-contact",
+          ].includes(provider.id),
+        )
+      : [];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-14 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -338,6 +349,27 @@ export default async function ResourceGuidePage({
             Compare all 50 property tax relief rows
             <ArrowRight className="h-4 w-4" />
           </Link>
+        </section>
+      ) : null}
+
+      {topic.slug === "education-training" ? (
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Education planning tools
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              Use the official decision tools before you enroll
+            </h2>
+            <p className="max-w-3xl text-base leading-8 text-[color:var(--muted)]">
+              Education questions usually split into four separate problems: choosing a school, confirming approval, getting counseling, and fixing a benefits question. These official tools cover those paths directly.
+            </p>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {educationProviders.map((provider) => (
+              <ProviderCard key={provider.id} provider={provider} />
+            ))}
+          </div>
         </section>
       ) : null}
 
