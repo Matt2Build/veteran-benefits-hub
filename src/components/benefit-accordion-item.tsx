@@ -12,7 +12,7 @@ export function BenefitAccordionItem({
   groupLabel?: string;
 }) {
   return (
-    <details className="group rounded-[1.5rem] border border-[color:var(--line)] bg-white/88 p-4 shadow-[0_14px_36px_rgba(16,33,50,0.05)]">
+    <details className="group rounded-[1.25rem] border border-[color:var(--line)] bg-white/90 p-3.5 shadow-[0_12px_30px_rgba(16,33,50,0.05)]">
       <summary className="list-none cursor-pointer">
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
@@ -21,7 +21,7 @@ export function BenefitAccordionItem({
                 {groupLabel}
               </p>
             ) : null}
-            <h3 className="text-lg font-semibold tracking-tight text-[color:var(--foreground)]">
+            <h3 className="text-base font-semibold tracking-tight text-[color:var(--foreground)] sm:text-lg">
               {benefit.question}
             </h3>
             <p className="text-sm leading-6 text-[color:var(--muted)]">
@@ -39,11 +39,11 @@ export function BenefitAccordionItem({
         </div>
       </summary>
 
-      <div className="mt-4 border-t border-[color:var(--line)] pt-4">
+      <div className="mt-3 border-t border-[color:var(--line)] pt-3">
         <div className="prose-markdown text-[color:var(--muted)]">
           <ReactMarkdown>{benefit.detailMd}</ReactMarkdown>
         </div>
-        <div className="mt-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <p className="text-sm font-semibold text-[color:var(--foreground)]">
             Verified {formatDate(benefit.verifiedDate)}
           </p>
