@@ -104,6 +104,18 @@ export default async function ResourceGuidePage({
           ].includes(provider.id),
         )
       : [];
+  const healthCareProviders =
+    topic.slug === "health-care"
+      ? providers.filter((provider) =>
+          [
+            "va-health-care",
+            "va-locations",
+            "va-mental-health",
+            "vet-centers",
+            "vcl",
+          ].includes(provider.id),
+        )
+      : [];
 
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-14 px-5 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -367,6 +379,27 @@ export default async function ResourceGuidePage({
           </div>
           <div className="grid gap-6 lg:grid-cols-2">
             {educationProviders.map((provider) => (
+              <ProviderCard key={provider.id} provider={provider} />
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      {topic.slug === "health-care" ? (
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[color:var(--muted)]">
+              Care access tools
+            </p>
+            <h2 className="text-3xl font-semibold tracking-tight text-[color:var(--foreground)]">
+              Use the right care door first
+            </h2>
+            <p className="max-w-3xl text-base leading-8 text-[color:var(--muted)]">
+              Health care questions usually split into separate paths: applying for VA care, finding a location, getting counseling through a Vet Center, or moving straight into mental health or crisis support. These official tools keep those entry points visible.
+            </p>
+          </div>
+          <div className="grid gap-6 lg:grid-cols-2">
+            {healthCareProviders.map((provider) => (
               <ProviderCard key={provider.id} provider={provider} />
             ))}
           </div>

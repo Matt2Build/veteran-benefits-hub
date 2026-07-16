@@ -70,6 +70,36 @@ const nationalResourceProviders: ResourceProvider[] = [
     ],
   },
   {
+    id: "va-mental-health",
+    name: "VA mental health services",
+    description:
+      "The direct VA mental health path for therapy, psychiatry, PTSD, depression, anxiety, and connecting to care.",
+    href: "https://www.va.gov/health-care/health-needs-conditions/mental-health/",
+    ctaLabel: "Open VA mental health services",
+    audience: "Veterans, service members, and family members seeking mental health care access",
+    typeLabel: "Official VA mental health care",
+    highlights: [
+      "Access therapy and mental health treatment options",
+      "Connect mental health questions back to VA care",
+      "Includes Vet Center pathways for eligible people",
+    ],
+  },
+  {
+    id: "vet-centers",
+    name: "Vet Centers",
+    description:
+      "Confidential community-based counseling for eligible Veterans, service members, and families in a non-medical setting.",
+    href: "https://www.vetcenter.va.gov/",
+    ctaLabel: "Open Vet Centers",
+    audience: "Veterans, service members, and families who want counseling outside a hospital setting",
+    typeLabel: "Official Vet Center counseling",
+    highlights: [
+      "No-cost confidential counseling",
+      "Community-based support outside the medical-center model",
+      "Can help even if traditional VA care is not the right first door",
+    ],
+  },
+  {
     id: "va-education",
     name: "GI Bill and education benefits",
     description:
@@ -487,16 +517,22 @@ export const resourceTopics: ResourceTopic[] = [
     summary:
       "Figure out whether you qualify, apply for coverage, and find the nearest VA facility or Vet Center.",
     icon: "heart",
-    providerIds: ["va-health-care", "va-locations"],
+    providerIds: [
+      "va-health-care",
+      "va-locations",
+      "va-mental-health",
+      "vet-centers",
+      "vcl",
+    ],
     bullets: [
-      "Apply for VA health care.",
-      "Check eligibility basics and where to get care.",
-      "Find the right clinic, regional office, or Vet Center near you.",
+      "Apply for VA health care and confirm the basic access path.",
+      "Use locations and Vet Centers when the need is local or in-person.",
+      "Use mental health and crisis paths directly when care cannot wait.",
     ],
     quickChecks: [
       "Do you need enrollment or just a facility?",
       "Are you looking for general care or mental health access?",
-      "Do you need a nearby in-person office today?",
+      "Do you need a clinic, a Vet Center, or immediate crisis support?",
     ],
     heroLabel: "Enrollment, locations, and care access",
     heroSummary:
@@ -683,6 +719,8 @@ const topicProviderBuilderMap: Record<string, (stateSlug: string) => string[]> =
     `${stateSlug}-state-veterans-agency`,
     "va-health-care",
     "va-locations",
+    "va-mental-health",
+    "vet-centers",
   ],
   "education-training": (stateSlug) => [
     `${stateSlug}-state-veterans-agency`,
